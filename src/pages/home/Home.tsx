@@ -1,12 +1,18 @@
  
 import Feature from './Feature'
-import ProductCard from './ProductCard'
+import HeroSection from './HeroSection'
+import NewArrivalTab from './NewArrivalTab'
+ 
+import TopRange from './TopRange'
 
 const Home = () => {
   return (
     <div>
+      <HeroSection></HeroSection>
       <Feature></Feature>
-      <ProductCard></ProductCard>
+      <NewArrivalTab></NewArrivalTab>
+      <TopRange></TopRange>
+
     </div>
   )
 }

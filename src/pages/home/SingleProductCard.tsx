@@ -45,7 +45,7 @@ const SingleProductCard = () => {
       >
         {productData.map((item, index) => (
           <SwiperSlide key={index}>
-            <div className="relative group overflow-hidden rounded-lg shadow-xl p-4 bg-base-200">
+            <div className="relative group overflow-hidden rounded-lg shadow-xl p-4 bg-white">
               <img src={imageUrl} className="w-full h-64 object-cover" />
               <div className="p-4">
                 <h3 className="text-xl font-semibold mb-2">{item.name}</h3>

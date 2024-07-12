@@ -28,10 +28,12 @@ const MainLayout = () => {
   return (
     <div>
        <Header> </Header>
-      <Topbar></Topbar>
+      {/* <Topbar></Topbar> */}
       <Navbar></Navbar>
       {/* <button onClick={handleLogout}>Logout</button> */}
-      <Outlet></Outlet>
+     <div className="bg-base-200">
+     <Outlet></Outlet>
+     </div>
       <Footer></Footer>
     </div>
   );
