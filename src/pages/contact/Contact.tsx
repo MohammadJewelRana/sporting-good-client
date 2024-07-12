@@ -1,21 +1,12 @@
- 
 // import img from '../../assets/images/pagesBackground/contactPage.jpg'
-import img from "../../assets/images/pagesBackground/c.jpg";
+// import img from "../../assets/images/pagesBackground/c.jpg";
+import SectionBanner from "../../components/sharedComponants/SectionBanner";
 
 const Contact = () => {
   return (
     <div>
-      <div className="relative  h-[300px] flex justify-center items-center">
-        {/* Blurred background image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center filter blur-0"
-          style={{ backgroundImage: `url(${img})` }}
-        ></div>
-        {/* Overlay to dim the background */}
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        {/* Text content */}
-        <h1 className="relative text-white text-6xl font-bold">Contact Us</h1>
-      </div>
+    
+      <SectionBanner heading={'Contact us'} ></SectionBanner>
 
       <div className="bg-gray-100  ">
         {/* Contact Information Section */}
@@ -116,8 +107,6 @@ const Contact = () => {
             </form>
           </div>
         </section>
-
-       
       </div>
     </div>
   );

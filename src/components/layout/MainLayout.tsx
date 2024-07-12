@@ -1,10 +1,10 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet,   } from "react-router-dom";
 import {
-  logout,
+ 
   selectCurrentUser,
   useCurrentToken,
 } from "../../redux/features/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "../../redux/features/hooks";
+import {   useAppSelector } from "../../redux/features/hooks";
 import { useGetAllProductQuery } from "../../redux/features/products/GetAllProducts";
 import Footer from "../sharedComponants/Footer";
  
@@ -23,13 +23,7 @@ const MainLayout = () => {
   });
   console.log(data);
 
-  // const navigate = useNavigate();
-
-  // const dispatch = useAppDispatch();
-  // const handleLogout = () => {
-  //   dispatch(logout());
-  //   navigate("/login");
-  // };
+   
 
   return (
     <div>
