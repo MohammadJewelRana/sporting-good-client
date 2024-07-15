@@ -1,12 +1,38 @@
 import SectionBanner from "../../components/sharedComponants/SectionBanner";
 import productImage from "../../assets/images/productImage/images.jpg";
-import { FaStar } from "react-icons/fa";
+import { FaRegStar, FaStar } from "react-icons/fa";
 import { FaBasketShopping } from "react-icons/fa6";
 
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import { useParams } from "react-router-dom";
+import { useAppSelector } from "../../redux/features/hooks";
+import { useCurrentToken } from "../../redux/features/auth/authSlice";
+
+import { useGetSingleProductQuery } from "../../redux/features/products/SIngleProduct";
+
+import Rating from "react-rating";
+import RatingStar from "../../components/sharedComponants/RatingStar";
+import { addToCart, addToDb } from "../../utils/localStorage";
+import { toast } from "sonner";
 
 const SinglePage = () => {
+  const { productId } = useParams();
+  console.log(productId);
+
+  const token = useAppSelector(useCurrentToken);
+  const { data, error, isLoading } = useGetSingleProductQuery(productId, {
+    skip: !token,
+  });
+  console.log(data);
+
+  const singleProduct = data?.data;
+
+  const addToCartLocalStorage = (id: string) => {
+    addToCart(id);
+    toast("Added to cart successfully!!");
+  };
+
   return (
     <div>
       <SectionBanner heading={"Product details"}></SectionBanner>
@@ -18,35 +44,36 @@ const SinglePage = () => {
 
         <div>
           <div>
-            <h1 className="text-xl font-bold ">Giro Nine MIPS Helmet</h1>
-            <p className="mt-2">studio design</p>
-          </div>
-
-          <div className="flex gap-2 mt-4">
-            <FaStar className="text-yellow-500 text-xl"></FaStar>
-            <FaStar className="text-yellow-500 text-xl"></FaStar>
-            <FaStar className="text-yellow-500 text-xl"></FaStar>
-            <FaStar className="text-yellow-500 text-xl"></FaStar>
-            <FaStar className="text-yellow-500 text-xl"></FaStar>
-            <p>1 Reviews</p>
-          </div>
-
-          <div>
-            <p className="font-bold text-2xl mt-4">$50.00</p>
-          </div>
-
-          <div className="mt-12">
-            <p className="max-w-[600px]">
-              other board in the K2 line-up pops harder or slashes heavier while
-              offering the perfect balance of power and finesse.
-              Bambooyah/Honeycomb Blended Core is the power-plant to this All
-              Mountain Freestyle board blended with Carbon Ollie Bar and Carbon
-              Web additives to
+            <h1 className="text-xl font-bold ">{singleProduct?.name}</h1>
+            <p className="mt-2 text-sm text-gray-600">
+              <span className="font-semibold text-sm">Brand : </span>
+              {singleProduct?.brand}
+            </p>
+            <p className="mt-2 text-sm text-gray-600">
+              <span className="font-semibold text-sm">SKU : </span>
+              {singleProduct?.sku}
             </p>
           </div>
 
+          <div className="flex gap-2 mt-4">
+            {/* <RatingStar rating={singleProduct?.ratings} /> */}
+            <RatingStar ratings={singleProduct?.ratings}></RatingStar>
+            <p>{singleProduct?.ratings?.numberOfRatings} Reviews</p>
+          </div>
+
           <div>
-            <button className="flex  items-center gap-3 border my-8 py-2 px-12 bg-black text-white rounded-l-full rounded-r-full hover:bg-yellow-300 hover:duration-300 hover:text-black">
+            <p className="font-bold text-2xl mt-4">${singleProduct?.price}</p>
+          </div>
+
+          <div className="mt-12">
+            <p className="max-w-[600px]">{singleProduct?.description}</p>
+          </div>
+
+          <div>
+            <button
+              onClick={() => addToCartLocalStorage(singleProduct?._id)}
+              className="flex  items-center gap-3 border my-8 py-2 px-12 bg-black text-white rounded-l-full rounded-r-full hover:bg-yellow-300 hover:duration-300 hover:text-black"
+            >
               <FaBasketShopping></FaBasketShopping>
               <p>Add To Cart</p>
             </button>
@@ -54,7 +81,13 @@ const SinglePage = () => {
 
           <div>
             <p>
-              Tags: <span> Electronic, Smartphone, Phone </span>
+              {" "}
+              <span className="font-semibold pr-4">Tags: </span>
+              {singleProduct?.tags.map((item: string) => (
+                <>
+                  <span className="px-2">{item},</span>
+                </>
+              ))}
             </p>
           </div>
         </div>

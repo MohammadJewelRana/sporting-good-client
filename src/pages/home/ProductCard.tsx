@@ -1,9 +1,14 @@
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import SingleProductCard from "./SingleProductCard";
+import { logout } from "../../redux/features/auth/authSlice";
 
 const ProductCard = ({tabOptions}) => {
  
 // console.log(tabOptions);
+// console.log(productData);
+ 
+  
+
 
 
   return (
@@ -27,7 +32,7 @@ const ProductCard = ({tabOptions}) => {
             {tabOptions?.map((item) => (
               <>
                 <TabPanel className="mt-8 w-full">
-                  <SingleProductCard />
+                  <SingleProductCard productData={item.productData} />
                 </TabPanel>
               </>
             ))}

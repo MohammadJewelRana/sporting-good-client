@@ -8,7 +8,7 @@ import imageUrl from "../../assets/images/productImage/images.jpg";
 import { FaEye, FaHeart, FaShoppingCart, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const SingleProductCard = () => {
+const SingleProductCard = ({productData}) => {
   const breakpoints = {
     640: {
       slidesPerView: 1,
@@ -23,18 +23,7 @@ const SingleProductCard = () => {
       spaceBetween: 50,
     },
   };
-  const productData = [
-    { name: "Football", price: 11.0 },
-    { name: "Football", price: 11.0 },
-    { name: "Football", price: 11.0 },
-    { name: "Football", price: 11.0 },
-    { name: "Football", price: 11.0 },
-    { name: "Football", price: 11.0 },
-    { name: "Football", price: 11.0 },
-    { name: "Football", price: 11.0 },
-    { name: "Football", price: 11.0 },
-    { name: "Football", price: 11.0 },
-  ];
+ 
   return (
     <div>
       <Swiper
@@ -43,7 +32,7 @@ const SingleProductCard = () => {
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
       >
-        {productData.map((item, index) => (
+        {productData?.map((item, index) => (
           <SwiperSlide key={index}>
             <div className="relative group overflow-hidden rounded-lg shadow-xl p-4 bg-white">
               <img src={imageUrl} className="w-full h-64 object-cover" />
@@ -73,8 +62,8 @@ const SingleProductCard = () => {
                     <FaHeart className="text-xl cursor-pointer" />
                   </div>
                   <div className="flex items-center justify-center text-white rounded-full bg-gray-600 p-2">
-                    <Link to="/singlePage">
-                      {/* <Link to={`/product/${item.id}`}> */}
+                    {/* <Link to="/singlePage"> */}
+                      <Link to={`/products/${item._id}`}>
                       <FaEye className="text-xl cursor-pointer" />
                     </Link>
                   </div>
