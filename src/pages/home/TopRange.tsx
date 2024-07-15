@@ -1,10 +1,10 @@
 import ProductCard from "./ProductCard";
 
-const TopRange = ({productData}) => {
+const TopRange = ({productData,refetch}) => {
   const tabOptions = [{ tabName: "  Top Range  " ,productData:productData}];
   return (
     <div>
-      <ProductCard tabOptions={tabOptions}></ProductCard>
+      <ProductCard tabOptions={tabOptions} refetch={refetch}></ProductCard>
     </div>
   );
 };

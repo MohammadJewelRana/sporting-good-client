@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { useDeleteSingleProductMutation } from "../../../redux/features/products/DeleteSingleProducts";
 import { useAppSelector } from "../../../redux/features/hooks";
 import { useCurrentToken } from "../../../redux/features/auth/authSlice";
+import img from "../../../assets/images/productImage/images.jpg";
 
 const ViewCard = ({ product, refetch }) => {
   // console.log(product);
@@ -52,7 +53,8 @@ const ViewCard = ({ product, refetch }) => {
   return (
     <div className="relative group w-64 h-80 m-4 rounded-lg overflow-hidden shadow-lg cursor-pointer">
       <img
-        src={product.image}
+        src={img}
+        // src={product.image}
         alt={product.name}
         className="w-full h-full object-cover"
       />
@@ -70,10 +72,11 @@ const ViewCard = ({ product, refetch }) => {
             />
           </Link>
 
-          <FaEdit
+          <Link to={`/manage-products/${product._id}`}>
+           <FaEdit
             className="text-white text-2xl cursor-pointer"
             title="Update Product  "
-          />
+          /></Link>
           <button onClick={() => handleDelete(product._id)}>
             <FaTrashAlt
               className="text-white text-2xl cursor-pointer"

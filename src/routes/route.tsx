@@ -9,6 +9,7 @@ import SinglePage from "../pages/product/SinglePage";
 import ManageProductLayout from "../pages/manageProducts/ManageProductLayout";
 import Dashboard from "../pages/manageProducts/Dashboard";
 import View from "../pages/manageProducts/crud/View";
+import UpdateProduct from "../pages/manageProducts/crud/UpdateProduct";
 
 const router = createBrowserRouter([
   {
@@ -35,18 +36,7 @@ const router = createBrowserRouter([
         path: "/products/:productId",
         element: <SinglePage></SinglePage>,
       },
-      // {
-      //     path:'/manage-products',
-      //     element:   <ManageProductLayout></ManageProductLayout>,
-      //     children:[
-      //         {
-      //           index:true,
-      //             // path :'',
-      //             element:<Dashboard></Dashboard>
-
-      //         }
-      //     ]
-      // },
+      
     ],
   },
   {
@@ -65,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "/manage-products/view",
         element: <View></View>,
+      },
+      {
+        path: "/manage-products/:id",
+        element:  <UpdateProduct></UpdateProduct>,
       },
     ],
   },

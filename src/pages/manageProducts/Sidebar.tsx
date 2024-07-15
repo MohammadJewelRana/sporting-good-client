@@ -1,9 +1,19 @@
 import { Layout, Menu, MenuProps } from "antd";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../redux/features/hooks";
+import { logout } from "../../redux/features/auth/authSlice";
 
 const { Sider } = Layout;
 
 const Sidebar = () => {
+
+  const navigate=useNavigate();
+  const dispatch = useAppDispatch();
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -67,7 +77,7 @@ const Sidebar = () => {
           </Link>
           <br />
 
-          <button className="text-gray-300 pt-4">Logout </button>
+          <button onClick={handleLogout} className="text-gray-300 pt-4">Logout </button>
         </div>
       </div>
     </Sider>

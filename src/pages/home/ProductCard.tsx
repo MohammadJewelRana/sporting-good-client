@@ -12,9 +12,9 @@ const ProductCard = ({tabOptions}) => {
 
 
   return (
-    <div className="pb-8">
+    <div className="pb-8 px-8">
       <div className="flex items-center justify-left  ">
-        <div className="mt-16 flex flex-col items-center px-4    mx-auto w-full">
+        <div className="mt-16  flex flex-col items-center px-4    mx-auto w-full">
           <Tabs className="w-full">
             <TabList className="flex space-x-4 border-b-2 border-gray-200 w-full">
               {tabOptions?.map((item) => (
@@ -32,7 +32,7 @@ const ProductCard = ({tabOptions}) => {
             {tabOptions?.map((item) => (
               <>
                 <TabPanel className="mt-8 w-full">
-                  <SingleProductCard productData={item.productData} />
+                  <SingleProductCard productData={item.productData} refetch={item.refetch} />
                 </TabPanel>
               </>
             ))}

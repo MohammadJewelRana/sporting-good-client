@@ -2,17 +2,17 @@ import ProductCard from "./ProductCard";
 
  
 
-const NewArrivalTab = ({productData}) => {
+const NewArrivalTab = ({productData,refetch}) => {
   
       const tabOptions = [
-    { tabName: "  New Arrivals  ",productData:productData },
-    { tabName: "  Featured Products",productData:productData },
-    { tabName: "  Best Selling",productData:productData },
+    { tabName: "  New Arrivals  ",productData:productData,refetch:refetch },
+    { tabName: "  Featured Products",productData:productData,refetch:refetch },
+    { tabName: "  Best Selling",productData:productData,refetch:refetch },
   ];
 
   return (
     <div>
-      <ProductCard tabOptions={tabOptions}  ></ProductCard>
+      <ProductCard tabOptions={tabOptions} refetch={refetch} ></ProductCard>
     </div>
   )
 }

@@ -15,7 +15,7 @@ const Home = () => {
 
   const token = useAppSelector(useCurrentToken);
 
-  const { data, error, isLoading } = useGetAllProductQuery(undefined, {
+  const { data, error, isLoading,refetch } = useGetAllProductQuery(undefined, {
     skip: !token ,
   });
   // console.log(data);
@@ -32,8 +32,8 @@ const Home = () => {
     <div>
       <HeroSection></HeroSection>
       <Feature></Feature>
-      <NewArrivalTab productData={productData}></NewArrivalTab>
-      <TopRange productData={productData}></TopRange>
+      <NewArrivalTab productData={productData} refetch={refetch}></NewArrivalTab>
+      <TopRange productData={productData} refetch={refetch}></TopRange>
 
     </div>
   )

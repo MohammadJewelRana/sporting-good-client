@@ -7,10 +7,17 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { getShoppingCartFromLocalStorage } from "../../utils/localStorage";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  //cart count
+  const cart = getShoppingCartFromLocalStorage();
+  const numberOfKeys = Object.keys(cart).length;
+ 
+
   return (
     <nav className="bg-gray-600 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -74,7 +81,7 @@ const Navbar = () => {
                   <FaShoppingCart className="h-6 w-6" />
                 </button>
                 <span className="absolute -top-1 -right-2 inline-block w-5 h-5 bg-red-500 text-white text-xs font-bold text-center rounded-full">
-                  3
+                  {numberOfKeys}
                 </span>
               </Link>
             </div>

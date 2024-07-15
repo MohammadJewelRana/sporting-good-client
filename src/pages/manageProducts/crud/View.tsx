@@ -1,6 +1,6 @@
 import Heading from "../Heading";
 
-import img from "../../../assets/images/productImage/images.jpg";
+ 
 import ViewCard from "./ViewCard";
 import { useAppSelector } from "../../../redux/features/hooks";
 import { useCurrentToken } from "../../../redux/features/auth/authSlice";

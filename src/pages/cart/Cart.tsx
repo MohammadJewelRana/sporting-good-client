@@ -4,18 +4,18 @@ import { FaEye, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { FaLeftRight } from "react-icons/fa6";
 import {
+  addToCart,
   getShoppingCartFromLocalStorage,
   removeFromDb,
 } from "../../utils/localStorage";
-import { useGetCartProductQuery } from "../../redux/features/products/GetCartProductInfo";
+ 
 import { useAppSelector } from "../../redux/features/hooks";
 import { useCurrentToken } from "../../redux/features/auth/authSlice";
 import { useGetAllProductQuery } from "../../redux/features/products/GetAllProducts";
+import { toast } from "sonner";
 
 const Cart = () => {
   const [quantity, setQuantity] = useState(1);
-  const [cartItems, setCartItems] = useState(getShoppingCartFromLocalStorage());
-
   const increaseQuantity = () => {
     setQuantity(quantity + 1);
   };
@@ -25,49 +25,67 @@ const Cart = () => {
       setQuantity(quantity - 1);
     }
   };
-
   const token = useAppSelector(useCurrentToken);
   // const { data, error, isLoading } = useGetCartProductQuery(cartItems, { skip: !token });
-  const { data, error, isLoading } = useGetAllProductQuery(undefined, {
+  const { data, error, isLoading, refetch } = useGetAllProductQuery(undefined, {
     skip: !token,
   });
   const allProducts = data?.data;
   // console.log(allProducts);
 
-  // console.log(cartItems);
-
-  const cartArray = Object.entries(cartItems).map(([productId, quantity]) => ({
-    productId: productId,
-    quantity: parseInt(quantity), // Convert quantity to number
-  }));
+  const cartItemFromLocalStorage = getShoppingCartFromLocalStorage();
+  const cartArray = Object.entries(cartItemFromLocalStorage).map(
+    ([productId, quantity]) => ({
+      productId: productId,
+      quantity: parseInt(quantity),
+    })
+  );
   // console.log(cartArray);
 
-  let cartData = [];
+  let newCartProductArray = [];
   cartArray.forEach((element) => {
     const { productId, quantity } = element;
-    // console.log(productId,quantity);
-
-    const find = allProducts?.filter((item) => item._id === productId);
-    // console.log(find);
-
-    if (find) {
-      // find.cartQuantity=quantity;
-      const obj = Object.fromEntries(find);
-      // console.log(find);
-      
-      // console.log(obj);
-      
-
-      // cartData?.push(obj);
-    }
+    const cartProduct = allProducts?.filter((item) => {
+      if (item._id === productId) {
+        let newObject = { ...item };
+        newObject.itemQuantity = quantity;
+        newCartProductArray.push(newObject);
+      }
+    });
   });
-  // console.log(cartData);
+  // console.log(newCartProductArray);
 
-  const handleRemove = (id) => {
-    removeFromDb(id);
-    const updatedCartItems = cartItems.filter((item) => item !== id);
-    setCartItems(updatedCartItems);
+  const handleRemoveItem = (id) => {
+    const res = removeFromDb(id);
+    console.log(res);
+
+    toast("Remove item from the cart!!");
+    refetch();
   };
+
+  const handleQuantity = (id, operation) => {
+    console.log(id, operation);
+    addToCart(id, operation);
+    refetch();
+  };
+  
+
+  // const subTotal:any[]=newCartProductArray.filter(item=>item.price+item.itemQuantity);
+  let subtotal = newCartProductArray.reduce((acc, item) => {
+    return acc + item.price * item.itemQuantity;
+  }, 0);
+  subtotal =  Number(subtotal.toFixed(2));
+  const vat:number= Number((subtotal*.1).toFixed(2));
+
+  const shippingCost=20;
+ 
+  
+  // const totalCost=(subtotal+shippingCost+vat).toFixed(2);
+  const totalCost= Number((subtotal+shippingCost+vat).toFixed(2))
+
+  // console.log(totalCost);
+
+
 
   return (
     <div className=" md:mx-12 lg:mx-32  p-4">
@@ -78,11 +96,10 @@ const Cart = () => {
             <h1 className="text-xl font-bold">SHOPPING CART</h1>
           </div>
           <div className="py-4">
-            {cartData?.map((item) => (
+            {newCartProductArray?.map((item) => (
               <>
                 <div className="flex py-8 justify-between items-center flex-wrap gap-4 px-2 border-b-2">
                   <div className="flex items-center gap-4">
-                
                     <div>
                       <img
                         src={img1}
@@ -102,19 +119,21 @@ const Cart = () => {
                   <div className="flex items-center flex-wrap gap-4">
                     <div className="flex items-center">
                       <button
-                        onClick={decreaseQuantity}
+                        onClick={() => handleQuantity(item._id, "decrease")}
+                        // onClick={decreaseQuantity}
                         className="bg-gray-200 text-gray-700 px-2 py-1 rounded-l focus:outline-none focus:bg-gray-300"
                       >
                         -
                       </button>
                       <input
                         type="text"
-                        value={quantity}
+                        value={item.itemQuantity>5 ? 5 : item.itemQuantity}
                         readOnly
                         className="w-12 text-center border-t border-b border-gray-200 focus:outline-none"
                       />
                       <button
-                        onClick={increaseQuantity}
+                        // onClick={increaseQuantity}
+                        onClick={() => handleQuantity(item._id, "increase")}
                         className="bg-gray-200 text-gray-700 px-2 py-1 rounded-r focus:outline-none focus:bg-gray-300"
                       >
                         +
@@ -122,7 +141,10 @@ const Cart = () => {
                     </div>
 
                     <div>
-                      <p className="font-bold mt-2">$ 11.30</p>
+                      <p className="font-bold mt-2">
+                        $ {item?.itemQuantity * item?.price}
+                      </p>
+                      {/* <p className="font-bold mt-2">$ {subtotal}</p> */}
                     </div>
                   </div>
 
@@ -135,7 +157,7 @@ const Cart = () => {
                         title="View"
                       />
                     </Link>
-                    <button onClick={() => handleRemove(item._id)}>
+                    <button onClick={() => handleRemoveItem(item._id)}>
                       <FaTrash
                         className="text-red-600 text-xl cursor-pointer"
                         title="Delete"
@@ -182,15 +204,19 @@ const Cart = () => {
           <div className="mt-4">
             <div className="flex justify-between items-center text-gray-500 py-2">
               <p className="font-semibold">Subtotal</p>
-              <p className="font-bold">$45</p>
+              <p className="font-bold">$ {subtotal}</p>
+            </div>
+            <div className="flex justify-between items-center text-gray-500 py-2">
+              <p className="font-semibold">Vat <span className="text-red-600 ">(10%)</span></p>
+              <p className="font-bold">$ {vat}</p>
             </div>
             <div className="flex justify-between items-center text-gray-500 py-2">
               <p className="font-semibold">Shipping</p>
-              <p className="font-bold">$5</p>
+              <p className="font-bold">$ {shippingCost}</p>
             </div>
             <div className="flex justify-between items-center text-gray-500 py-2">
               <p className="font-semibold">Total</p>
-              <p className="font-bold">$50</p>
+              <p className="font-bold">$  {totalCost}</p>
             </div>
           </div>
 
