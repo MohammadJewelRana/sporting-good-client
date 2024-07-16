@@ -1,17 +1,14 @@
 const addToCart = (id: string, operation: string) => {
-  // console.log(operation);
-
   const cart = getShoppingCartFromLocalStorage();
   let quantity = cart[id];
   let message;
-
-  console.log(quantity);
+  // console.log(quantity);
   if (!quantity) {
     cart[id] = 1;
-    message='new'
+    message = "new";
   } else {
     cart[id] = quantity + 1;
-    message='added'
+    message = "added";
   }
 
   if (operation === "decrease") {

@@ -1,32 +1,25 @@
 import { useEffect, useState } from "react";
 import img1 from "../../assets/images/productImage/images.jpg";
 import { FaEye, FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaLeftRight } from "react-icons/fa6";
 import {
   addToCart,
   getShoppingCartFromLocalStorage,
   removeFromDb,
 } from "../../utils/localStorage";
- 
+
 import { useAppSelector } from "../../redux/features/hooks";
 import { useCurrentToken } from "../../redux/features/auth/authSlice";
 import { useGetAllProductQuery } from "../../redux/features/products/GetAllProducts";
 import { toast } from "sonner";
+import Swal from "sweetalert2";
+import { cartCalculation } from "../../utils/cartCalculation";
 
 const Cart = () => {
   const [quantity, setQuantity] = useState(1);
-  const increaseQuantity = () => {
-    setQuantity(quantity + 1);
-  };
 
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
   const token = useAppSelector(useCurrentToken);
-  // const { data, error, isLoading } = useGetCartProductQuery(cartItems, { skip: !token });
   const { data, error, isLoading, refetch } = useGetAllProductQuery(undefined, {
     skip: !token,
   });
@@ -34,6 +27,7 @@ const Cart = () => {
   // console.log(allProducts);
 
   const cartItemFromLocalStorage = getShoppingCartFromLocalStorage();
+  //convert cart object into array
   const cartArray = Object.entries(cartItemFromLocalStorage).map(
     ([productId, quantity]) => ({
       productId: productId,
@@ -57,8 +51,7 @@ const Cart = () => {
 
   const handleRemoveItem = (id) => {
     const res = removeFromDb(id);
-    console.log(res);
-
+    // console.log(res);
     toast("Remove item from the cart!!");
     refetch();
   };
@@ -68,24 +61,25 @@ const Cart = () => {
     addToCart(id, operation);
     refetch();
   };
-  
 
-  // const subTotal:any[]=newCartProductArray.filter(item=>item.price+item.itemQuantity);
-  let subtotal = newCartProductArray.reduce((acc, item) => {
-    return acc + item.price * item.itemQuantity;
-  }, 0);
-  subtotal =  Number(subtotal.toFixed(2));
-  const vat:number= Number((subtotal*.1).toFixed(2));
+  const {subtotal,totalQuantity,vat,totalCost,shippingCost}=cartCalculation(newCartProductArray);
 
-  const shippingCost=20;
- 
-  
-  // const totalCost=(subtotal+shippingCost+vat).toFixed(2);
-  const totalCost= Number((subtotal+shippingCost+vat).toFixed(2))
-
-  // console.log(totalCost);
-
-
+  const navigate = useNavigate();
+  const proceedToCheckout = () => {
+    Swal.fire({
+      title: "Want to checkout????",
+      text: " ",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, do it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/checkout", { state: { newCartProductArray } });
+      }
+    });
+  };
 
   return (
     <div className=" md:mx-12 lg:mx-32  p-4">
@@ -127,7 +121,7 @@ const Cart = () => {
                       </button>
                       <input
                         type="text"
-                        value={item.itemQuantity>5 ? 5 : item.itemQuantity}
+                        value={item.itemQuantity > 5 ? 5 : item.itemQuantity}
                         readOnly
                         className="w-12 text-center border-t border-b border-gray-200 focus:outline-none"
                       />
@@ -203,11 +197,21 @@ const Cart = () => {
 
           <div className="mt-4">
             <div className="flex justify-between items-center text-gray-500 py-2">
+              <p className="font-semibold">Total Item</p>
+              <p className="font-bold"> {newCartProductArray.length}</p>
+            </div>
+            <div className="flex justify-between items-center text-gray-500 py-2">
+              <p className="font-semibold">Total Quantity</p>
+              <p className="font-bold"> {totalQuantity}</p>
+            </div>
+            <div className="flex justify-between items-center text-gray-500 py-2">
               <p className="font-semibold">Subtotal</p>
               <p className="font-bold">$ {subtotal}</p>
             </div>
             <div className="flex justify-between items-center text-gray-500 py-2">
-              <p className="font-semibold">Vat <span className="text-red-600 ">(10%)</span></p>
+              <p className="font-semibold">
+                Vat <span className="text-red-600 ">(10%)</span>
+              </p>
               <p className="font-bold">$ {vat}</p>
             </div>
             <div className="flex justify-between items-center text-gray-500 py-2">
@@ -216,12 +220,15 @@ const Cart = () => {
             </div>
             <div className="flex justify-between items-center text-gray-500 py-2">
               <p className="font-semibold">Total</p>
-              <p className="font-bold">$  {totalCost}</p>
+              <p className="font-bold">$ {totalCost}</p>
             </div>
           </div>
 
           <div className="mb-3 mt-4">
-            <button className="border w-full py-2 rounded-lg font-semibold bg-green-500 text-white hover:bg-green-400 duration-300">
+            <button
+              onClick={proceedToCheckout}
+              className="border w-full py-2 rounded-lg font-semibold bg-green-500 text-white hover:bg-green-400 duration-300"
+            >
               Proceed To Checkout
             </button>
           </div>

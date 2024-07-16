@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaBars,
   FaHeart,
@@ -12,10 +12,22 @@ import { getShoppingCartFromLocalStorage } from "../../utils/localStorage";
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+ 
+  const [cart, setCart] = useState(getShoppingCartFromLocalStorage());
+  useEffect(() => {
+     
 
-  //cart count
-  const cart = getShoppingCartFromLocalStorage();
+    const currentLength=async()=>{
+      setCart(getShoppingCartFromLocalStorage());
+    }
+    currentLength();
+
+  }, []);
+  // }, [cart]);
+
   const numberOfKeys = Object.keys(cart).length;
+
+ 
  
 
   return (
