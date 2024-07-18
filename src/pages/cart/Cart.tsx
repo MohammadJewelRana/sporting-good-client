@@ -48,6 +48,7 @@ const Cart = () => {
     });
   });
   // console.log(newCartProductArray);
+  // console.log(newCartProductArray[0]?.inventory?.quantity);
 
   const handleRemoveItem = (id) => {
     const res = removeFromDb(id);
@@ -210,7 +211,7 @@ const Cart = () => {
             </div>
             <div className="flex justify-between items-center text-gray-500 py-2">
               <p className="font-semibold">
-                Vat <span className="text-red-600 ">(10%)</span>
+                Vat <span className="text-red-600 ">(15%)</span>
               </p>
               <p className="font-bold">$ {vat}</p>
             </div>

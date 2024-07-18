@@ -2,7 +2,9 @@
 import { selectCurrentUser, useCurrentToken } from '../../redux/features/auth/authSlice'
 import { useAppSelector } from '../../redux/features/hooks'
 import { useGetAllProductQuery } from '../../redux/features/products/GetAllProducts'
+import GetInTouch from '../contact/GetInTouch'
 import Feature from './Feature'
+import Featured from './featured/Featured'
 import HeroSection from './HeroSection'
 import NewArrivalTab from './NewArrivalTab'
  
@@ -14,13 +16,9 @@ const Home = () => {
   // console.log(user);
 
   const token = useAppSelector(useCurrentToken);
-
   const { data, error, isLoading,refetch } = useGetAllProductQuery(undefined, {
     skip: !token ,
   });
-  // console.log(data);
-
-  // const {data:productData}=data;
   const productData=data?.data;
 
 
@@ -32,8 +30,11 @@ const Home = () => {
     <div>
       <HeroSection></HeroSection>
       <Feature></Feature>
+      <Featured></Featured>
       <NewArrivalTab productData={productData} refetch={refetch}></NewArrivalTab>
       <TopRange productData={productData} refetch={refetch}></TopRange>
+
+      <GetInTouch></GetInTouch>
 
     </div>
   )

@@ -11,6 +11,7 @@ import Dashboard from "../pages/manageProducts/Dashboard";
 import View from "../pages/manageProducts/crud/View";
 import UpdateProduct from "../pages/manageProducts/crud/UpdateProduct";
 import Checkout from "../pages/cart/Checkout";
+import ProductPage from "../pages/product/ProductPage";
 
 const router = createBrowserRouter([
   {
@@ -23,7 +24,15 @@ const router = createBrowserRouter([
       },
       {
         path: "/contact",
-        element: <Contact />,
+           element: <Contact />,
+      },
+      {
+        path: "/product",
+        element: <ProductPage />,
+      },
+      {
+        path: "/product/manage/:state",
+        element: <ProductPage />,
       },
       {
         path: "/about",

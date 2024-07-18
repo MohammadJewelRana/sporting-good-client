@@ -1,19 +1,28 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { useAppSelector } from "../../redux/features/hooks";
-import { selectCurrentUser } from "../../redux/features/auth/authSlice";
+import {
+  selectCurrentUser,
+  useCurrentToken,
+} from "../../redux/features/auth/authSlice";
 import { useGetSingleUserQuery } from "../../redux/features/user/getUSerData";
 import { cartCalculation } from "../../utils/cartCalculation";
 
 import img1 from "../../assets/images/productImage/images.jpg";
+import { deleteShoppingCart } from "../../utils/localStorage";
+import { useCreateCartQuery } from "../../redux/features/products/createCart";
 
 const Checkout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { newCartProductArray } = location.state || { cart: [] };
-  console.log(newCartProductArray);
-  
+  // console.log(newCartProductArray);
+  const completed = true;
+
+  const token = useAppSelector(useCurrentToken);
+  // const  {data} = useCreateCartQuery();
 
   const user = useAppSelector(selectCurrentUser);
   const { data, error, isLoading } = useGetSingleUserQuery(user?.userId);
@@ -21,6 +30,21 @@ const Checkout = () => {
 
   const { subtotal, totalQuantity, vat, totalCost, shippingCost } =
     cartCalculation(newCartProductArray);
+
+  let productInfoArray = [];
+  newCartProductArray.forEach((element) => {
+    const { name, _id, price, itemQuantity, images } = element;
+    const obj = {
+      productId: _id,
+      name,
+      price,
+      images,
+      itemQuantity,
+      total: price * itemQuantity,
+    };
+    productInfoArray.push(obj);
+  });
+  // console.log(productInfoArray);
 
   const {
     register,
@@ -30,8 +54,15 @@ const Checkout = () => {
 
   const onSubmit = (data) => {
     console.log(data);
-    const { name, address, contactNumber, district, street, houseNumber, email } =
-      data;
+    const {
+      name,
+      address,
+      contactNumber,
+      district,
+      street,
+      houseNumber,
+      email,
+    } = data;
 
     const orderData = {
       userId: user?.userId,
@@ -42,9 +73,14 @@ const Checkout = () => {
       houseNumber,
       street,
       district,
+      totalItem: newCartProductArray.length,
+      totalQuantity,
+      vat,
+      shippingCost,
+      totalCost,
+      productInfo: productInfoArray,
     };
     console.log(orderData);
-    
 
     Swal.fire({
       title: "Want to confirm order????",
@@ -56,14 +92,42 @@ const Checkout = () => {
       confirmButtonText: "Yes, do it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Proceed with order confirmation
-      }
-    });
-  };
 
-  if (isLoading || !user || !data) {
-    return <p>Loading....</p>;
+        try {
+  //          const data =  createCart(orderData).unwrap();
+  // console.log(data);
+  Swal.fire({
+    title: "Order Placed!",
+    text: "Your order has been placed.",
+    icon: "success",
+  });
+  navigate("/");
+  handleCartClear();
+          
+        } catch (error) {
+          Swal.fire({
+                        title: "Error!",
+                        text: "There was an error deleting the product.",
+                        icon: "error",
+                      });
+
+        }
+
+ 
+      }
+    })
+      
+ 
+
+
+
+
+
   }
+
+  const handleCartClear = () => {
+    deleteShoppingCart();
+  };
 
   return (
     <div className="md:mx-12 lg:mx-32 p-4">
@@ -293,6 +357,12 @@ const Checkout = () => {
                   )}
                 </div>
 
+                <div>
+                  <h1 className="text-xl font-semibold text-gray-500 py-4">
+                    {" "}
+                    Payment Method : Cash on delivery
+                  </h1>
+                </div>
                 <div className="mb-3 mt-4">
                   <button
                     type="submit"

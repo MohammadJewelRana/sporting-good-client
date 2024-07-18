@@ -9,8 +9,9 @@ export const cartCalculation = (cartArray:[]) => {
   });
   subtotal = Number(subtotal.toFixed(2));
 
-  const vat: number = Number((subtotal * 0.1).toFixed(2));
-  const shippingCost = 20;
+  const vat: number = Number((subtotal * 0.15).toFixed(2));
+  const shippingCost =  cartArray.length ? 20 : 0;
+
 
   const totalCost = Number((subtotal + shippingCost + vat).toFixed(2));
 

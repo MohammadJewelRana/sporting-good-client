@@ -59,7 +59,7 @@ const Navbar = () => {
                   Contact Us
                 </Link>
                 <Link
-                  to="/product"
+                  to={`/product/manage/${'normal'}`} 
                   className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Products
