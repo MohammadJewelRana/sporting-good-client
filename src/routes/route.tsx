@@ -12,6 +12,7 @@ import View from "../pages/manageProducts/crud/View";
 import UpdateProduct from "../pages/manageProducts/crud/UpdateProduct";
 import Checkout from "../pages/cart/Checkout";
 import ProductPage from "../pages/product/ProductPage";
+import AddProducts from "../pages/manageProducts/crud/AddProducts";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
       {
         path: "/manage-products/view",
         element: <View></View>,
+      },
+      {
+        path: "/manage-products/add-products",
+        element: <AddProducts></AddProducts>,
       },
       {
         path: "/manage-products/:id",

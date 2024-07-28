@@ -12,7 +12,10 @@ import { cartCalculation } from "../../utils/cartCalculation";
 
 import img1 from "../../assets/images/productImage/images.jpg";
 import { deleteShoppingCart } from "../../utils/localStorage";
-import { useCreateCartQuery } from "../../redux/features/products/createCart";
+import {
+  useCreateCartQuery,
+  useOrderMutation,
+} from "../../redux/features/products/createCart";
 
 const Checkout = () => {
   const location = useLocation();
@@ -22,7 +25,15 @@ const Checkout = () => {
   const completed = true;
 
   const token = useAppSelector(useCurrentToken);
-  // const  {data} = useCreateCartQuery();
+  const [
+    order,
+    {
+      isLoading: orderIsLoading,
+      isSuccess: orderIsSuccess,
+      isError: orderIsError,
+      error: orderError,
+    },
+  ] = useOrderMutation();
 
   const user = useAppSelector(selectCurrentUser);
   const { data, error, isLoading } = useGetSingleUserQuery(user?.userId);
@@ -92,38 +103,26 @@ const Checkout = () => {
       confirmButtonText: "Yes, do it!",
     }).then((result) => {
       if (result.isConfirmed) {
-
         try {
-  //          const data =  createCart(orderData).unwrap();
-  // console.log(data);
-  Swal.fire({
-    title: "Order Placed!",
-    text: "Your order has been placed.",
-    icon: "success",
-  });
-  navigate("/");
-  handleCartClear();
-          
+          const result =  order(orderData).unwrap();
+  
+          Swal.fire({
+            title: "Order Placed!",
+            text: "Your order has been placed.",
+            icon: "success",
+          });
+          navigate("/");
+          handleCartClear();
         } catch (error) {
           Swal.fire({
-                        title: "Error!",
-                        text: "There was an error deleting the product.",
-                        icon: "error",
-                      });
-
+            title: "Error!",
+            text: "There was an error to complete checkout process .",
+            icon: "error",
+          });
         }
-
- 
       }
-    })
-      
- 
-
-
-
-
-
-  }
+    });
+  };
 
   const handleCartClear = () => {
     deleteShoppingCart();

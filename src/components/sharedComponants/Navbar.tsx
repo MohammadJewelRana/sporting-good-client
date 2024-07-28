@@ -9,21 +9,45 @@ import {
 import { Link } from "react-router-dom";
 import { getShoppingCartFromLocalStorage } from "../../utils/localStorage";
 
+
+const getShoppingCartFromLocalStorag = () => {
+  return JSON.parse(localStorage.getItem('cart')) || {};
+};
+
+
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
  
-  const [cart, setCart] = useState(getShoppingCartFromLocalStorage());
-  useEffect(() => {
+  // const [cart, setCart] = useState(getShoppingCartFromLocalStorage());
+  
+  // useEffect(() => {
      
+  //   const currentLength=async()=>{
+  //     setCart(getShoppingCartFromLocalStorage());
+  //   }
+  //   currentLength();
 
-    const currentLength=async()=>{
-      setCart(getShoppingCartFromLocalStorage());
-    }
-    currentLength();
-
-  }, []);
   // }, [cart]);
+  // // }, [cart]);
+
+  // const numberOfKeys = Object.keys(cart).length;
+
+  const [cart, setCart] = useState(getShoppingCartFromLocalStorag());
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setCart(getShoppingCartFromLocalStorage());
+    };
+
+    // Listen for changes to local storage
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      // Clean up the event listener on component unmount
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [cart]);
 
   const numberOfKeys = Object.keys(cart).length;
 
@@ -31,7 +55,7 @@ const Navbar = () => {
  
 
   return (
-    <nav className="bg-gray-600 text-white">
+    <nav className="bg-gray-600 text-white ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">

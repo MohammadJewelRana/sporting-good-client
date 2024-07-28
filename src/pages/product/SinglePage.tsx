@@ -15,6 +15,7 @@ import Rating from "react-rating";
 import RatingStar from "../../components/sharedComponants/RatingStar";
 import { addToCart, addToDb } from "../../utils/localStorage";
 import { toast } from "sonner";
+import Newsletter from "../../components/sharedComponants/Newsletter";
 
 const SinglePage = () => {
   const { productId } = useParams();
@@ -146,6 +147,10 @@ const SinglePage = () => {
             </TabPanel>
           </Tabs>
         </div>
+      </div>
+
+      <div>
+        <Newsletter></Newsletter>
       </div>
     </div>
   );

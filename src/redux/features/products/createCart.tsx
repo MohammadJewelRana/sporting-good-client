@@ -1,12 +1,30 @@
  
 
+// import { baseApi } from "../../api/baseApi";
+
+// const createCartApi = baseApi.injectEndpoints({
+//     endpoints: (builder) => ({
+//       createCart: builder.mutation({
+//         query: (data) => ({
+//           url: '/products/cart',
+//           method: "POST",
+//           body:data
+//         }),
+//       }),
+//     }),
+//   });
+  
+//   export const {  useCreateCartQuery } = createCartApi;
+ 
+ 
+
 import { baseApi } from "../../api/baseApi";
 
-const createCartApi = baseApi.injectEndpoints({
+const createOrderApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-      createCart: builder.mutation({
+      order: builder.mutation({
         query: (data) => ({
-          url: '/products/cart',
+          url: '/products/order',
           method: "POST",
           body:data
         }),
@@ -14,5 +32,5 @@ const createCartApi = baseApi.injectEndpoints({
     }),
   });
   
-  export const {  useCreateCartQuery } = createCartApi;
+  export const {  useOrderMutation } = createOrderApi;
  

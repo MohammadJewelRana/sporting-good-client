@@ -2,6 +2,7 @@ import { FaAddressBook, FaLocationArrow, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/features/hooks";
 import { logout } from "../../redux/features/auth/authSlice";
+import { deleteShoppingCart } from "../../utils/localStorage";
 
 const Header = () => {
 
@@ -10,6 +11,9 @@ const Header = () => {
   const dispatch = useAppDispatch();
   const handleLogout = () => {
     dispatch(logout());
+
+    deleteShoppingCart();
+
     navigate("/login");
   };
 
