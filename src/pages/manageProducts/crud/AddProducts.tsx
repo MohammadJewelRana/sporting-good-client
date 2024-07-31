@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 
 const AddProducts = () => {
   const [images, setImages] = useState([]);
+
   const token = useAppSelector(useCurrentToken);
   const [addProducts, { isLoading, isSuccess, isError, error }] =
     useAddProductsMutation();
@@ -45,7 +46,7 @@ const AddProducts = () => {
   });
 
   const onSubmit = async (data) => {
-    // console.log(data);
+    const formData = new FormData();
 
     const {
       name,
@@ -67,7 +68,7 @@ const AddProducts = () => {
       width,
       specifications,
     } = data;
-    // console.log(data);
+
     const priceConvert = Number(price);
     const discountPriceConvert = Number(discountPrice);
     const quantityConvert = Number(quantity);
@@ -83,11 +84,9 @@ const AddProducts = () => {
       inStockNew = false;
     }
 
-    //  console.log(typeof priceConvert);
-
     const categoryDataNew = {
-      name: categoryName,
-      description: categoryDetails,
+      name: categoryName || "",
+      description: categoryDetails || "",
     };
 
     const inventoryData = {
@@ -104,37 +103,46 @@ const AddProducts = () => {
       },
     };
 
-    const warrantyData = { details, period };
+    const warrantyData = { details: details || "", period: period || "" };
 
-    let imagesArray = [];
-    images.forEach((element) => {
-      imagesArray.push(element?.name);
-    });
-    // console.log(imagesArray);
+    // Append basic data fields to FormData
+    if (name) formData.append("name", name);
+    if (price) formData.append("price", priceConvert);
+    if (discountPrice) formData.append("discountPrice", discountPriceConvert);
+    if (brand) formData.append("brand", brand);
+    if (sku) formData.append("sku", sku);
+    if (description) formData.append("description", description);
+    if (categoryDataNew)
+      formData.append("category", JSON.stringify(categoryDataNew));
+    if (inventoryData)
+      formData.append("inventory", JSON.stringify(inventoryData));
+    if (warrantyData) formData.append("warranty", JSON.stringify(warrantyData));
+    if (shippingDetails)
+      formData.append("shippingDetails", JSON.stringify(shippingDetails));
+    if (specifications)
+      formData.append("specifications", JSON.stringify(specifications));
 
-    const finalData = {
-      name,
-      price: priceConvert,
-      discountPrice: discountPriceConvert,
-      brand,
-      sku,
-      images: imagesArray,
-      tags,
-      description,
-      category: categoryDataNew,
-      inventory: inventoryData,
-      warranty: warrantyData,
-      shippingDetails,
-      specifications,
-    };
+    // Append tags array as individual items
+    if (tags && tags.length > 0) {
+      tags.forEach((tag) => {
+        formData.append("tags[]", tag);
+      });
+    }
 
-    // data.images = images;
-    // console.log(data);
+    // Append images
+    if (images && images.length > 0) {
+      images.forEach((image) => {
+        formData.append("files", image); // 'files' should match the field name in multer config
+      });
+    }
 
-    console.log(finalData);
+    // Console log formData entries
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
 
     try {
-      const result = await addProducts(finalData).unwrap();
+      const result = await addProducts(formData).unwrap();
 
       if (result) {
         Swal.fire({
@@ -144,12 +152,13 @@ const AddProducts = () => {
           showConfirmButton: false,
           timer: 1500,
         });
+
+        // Reset the form and images state
+        reset();
+        setImages([]);
       }
 
       console.log(result.success);
-
-      reset();
-      setImages([]);
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -285,7 +294,8 @@ const AddProducts = () => {
                   </label>
                   <select
                     className="  border w-full px-3 py-2 rounded-lg text-black "
-                    {...register("categoryName")}
+                    // {...register("categoryName")}
+                    {...register("categoryName", { required: true })}
                   >
                     <option value=""> Category</option>
                     <option value="Sports">Sports</option>

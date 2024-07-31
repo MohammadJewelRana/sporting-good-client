@@ -19,9 +19,7 @@ const Home = () => {
   // console.log(user);
 
   const token = useAppSelector(useCurrentToken);
-  const { data, error, isLoading, refetch } = useGetAllProductQuery(undefined, {
-    skip: !token,
-  });
+  const { data, error, isLoading, refetch } = useGetAllProductQuery(undefined);
   const productData = data?.data;
 
   return (

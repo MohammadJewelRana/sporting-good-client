@@ -18,6 +18,7 @@ import { cartCalculation } from "../../utils/cartCalculation";
 
 const Cart = () => {
   const [quantity, setQuantity] = useState(1);
+  const [disble, setDisable] = useState(false);
 
   const token = useAppSelector(useCurrentToken);
   const { data, error, isLoading, refetch } = useGetAllProductQuery(undefined, {
@@ -34,20 +35,32 @@ const Cart = () => {
       quantity: parseInt(quantity),
     })
   );
-  // console.log(cartArray);
+  console.log(cartArray);
 
   let newCartProductArray = [];
+  let disableButton = false;
   cartArray.forEach((element) => {
     const { productId, quantity } = element;
     const cartProduct = allProducts?.filter((item) => {
       if (item._id === productId) {
         let newObject = { ...item };
         newObject.itemQuantity = quantity;
+        // console.log(newObject);
+        newObject.productStatus = null;
+        if (newObject.itemQuantity > newObject.inventory?.quantity) {
+          newObject.productStatus = "notAvailable";
+          // setDisable(true);
+          disableButton = true;
+        }
+
         newCartProductArray.push(newObject);
       }
     });
   });
-  // console.log(newCartProductArray);
+  console.log(newCartProductArray);
+  console.log(disableButton);
+
+  // console.log(newCartProductArray[0].inventory.inStock);
   // console.log(newCartProductArray[0]?.inventory?.quantity);
 
   const handleRemoveItem = (id) => {
@@ -63,9 +76,11 @@ const Cart = () => {
     refetch();
   };
 
-  const {subtotal,totalQuantity,vat,totalCost,shippingCost}=cartCalculation(newCartProductArray);
+  const { subtotal, totalQuantity, vat, totalCost, shippingCost } =
+    cartCalculation(newCartProductArray);
 
   const navigate = useNavigate();
+
   const proceedToCheckout = () => {
     Swal.fire({
       title: "Want to checkout????",
@@ -93,7 +108,13 @@ const Cart = () => {
           <div className="py-4">
             {newCartProductArray?.map((item) => (
               <>
-                <div className="flex py-8 justify-between items-center flex-wrap gap-4 px-2 border-b-2">
+                <div
+                  className={`flex py-8 justify-between items-center flex-wrap gap-4 px-2 border-b-2 ${
+                    item.productStatus !== null
+                      ? "bg-gray-200 border-dashed border-red-500 border-t "
+                      : "bg-white"
+                  } `}
+                >
                   <div className="flex items-center gap-4">
                     <div>
                       <img
@@ -107,7 +128,12 @@ const Cart = () => {
                         {item?.name}
                       </h1>
                       <p className="font-bold">$ {item?.price}</p>
-                      <p>In stock</p>
+
+                      {item.inventory?.inStock === true ? (
+                        <p>In stock</p>
+                      ) : (
+                        <p> stock out</p>
+                      )}
                     </div>
                   </div>
 
@@ -139,6 +165,7 @@ const Cart = () => {
                       <p className="font-bold mt-2">
                         $ {item?.itemQuantity * item?.price}
                       </p>
+
                       {/* <p className="font-bold mt-2">$ {subtotal}</p> */}
                     </div>
                   </div>
@@ -160,6 +187,11 @@ const Cart = () => {
                     </button>
                   </div>
                 </div>
+                {item?.productStatus !== null && (
+                  <p className="text-red-600  text-opacity-45 text-center">
+                    Selected quantity is greater than available quantity!!
+                  </p>
+                )}
               </>
             ))}
           </div>
@@ -227,8 +259,13 @@ const Cart = () => {
 
           <div className="mb-3 mt-4">
             <button
+              disabled={disableButton === true}
               onClick={proceedToCheckout}
-              className="border w-full py-2 rounded-lg font-semibold bg-green-500 text-white hover:bg-green-400 duration-300"
+              className={`border w-full py-2 rounded-lg font-semibold ${
+                disableButton === true
+                  ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                  : "bg-green-500 text-white hover:bg-green-400 duration-300"
+              }`}
             >
               Proceed To Checkout
             </button>
