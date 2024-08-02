@@ -72,7 +72,7 @@ const ViewCard = ({ product, refetch }) => {
             />
           </Link>
 
-          <Link to={`/manage-products/${product._id}`}>
+          <Link to={`/manage-products/update/${product._id}`}>
            <FaEdit
             className="text-white text-2xl cursor-pointer"
             title="Update Product  "

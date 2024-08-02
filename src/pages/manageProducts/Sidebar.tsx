@@ -26,6 +26,7 @@ const Sidebar = () => {
       children: [
         { key: "21", label : <NavLink to='/manage-products/add-products'>Add </NavLink>},
         { key: "22", label : <NavLink to='/manage-products/view'>View </NavLink> },
+        { key: "23", label : <NavLink to='/manage-products/update'>Update </NavLink> },
       ],
     },
     {
