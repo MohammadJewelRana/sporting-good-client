@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -7,13 +8,10 @@ import "swiper/css";
 import imageUrl from "../../assets/images/productImage/images.jpg";
 import { FaEye, FaHeart, FaShoppingCart, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import {
-  addToCart,
-  getShoppingCartFromLocalStorage,
-} from "../../utils/localStorage";
+import { addToCart } from "../../utils/localStorage";
 import { toast } from "sonner";
 
-const SingleProductCard = ({ productData, refetch }) => {
+const SingleProductCard = ({ productData }: any) => {
   const breakpoints = {
     640: {
       slidesPerView: 1,
@@ -30,7 +28,7 @@ const SingleProductCard = ({ productData, refetch }) => {
   };
   // console.log(refetch);
   const addToCartLocalStorage = (id: string) => {
-    const res = addToCart(id);
+    const res = addToCart(id, "increase");
     // console.log(res);
     if (res === "added") {
       toast("Product Already Added Into The Basket!!");
@@ -48,7 +46,7 @@ const SingleProductCard = ({ productData, refetch }) => {
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
       >
-        {productData?.map((item, index) => (
+        {productData?.map((item: any, index: any) => (
           <SwiperSlide key={index}>
             <div className="relative group overflow-hidden rounded-lg shadow-xl p-4 bg-white">
               <img src={imageUrl} className="w-full h-64 object-cover" />

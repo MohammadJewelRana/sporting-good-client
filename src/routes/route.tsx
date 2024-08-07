@@ -13,6 +13,10 @@ import UpdateProduct from "../pages/manageProducts/crud/UpdateProduct";
 import Checkout from "../pages/cart/Checkout";
 import ProductPage from "../pages/product/ProductPage";
 import AddProducts from "../pages/manageProducts/crud/AddProducts";
+ 
+import ProtectedRoute from "../components/layout/ProtectedRoute";
+import SignUp from "../pages/login/SignUp";
+ 
 
 const router = createBrowserRouter([
   {
@@ -27,10 +31,7 @@ const router = createBrowserRouter([
         path: "/contact",
            element: <Contact />,
       },
-      {
-        path: "/product",
-        element: <ProductPage />,
-      },
+
       {
         path: "/product/manage/:state",
         element: <ProductPage />,
@@ -39,19 +40,25 @@ const router = createBrowserRouter([
         path: "/about",
         element: <About></About>,
       },
+ 
+
       {
         path: "/cart",
         element: <Cart></Cart>,
       },
+      // {
+      //   path: "/myOrder",
+        // element:  <MyOrder></MyOrder>,
+      // },
       {
         path: "/checkout",
-        element:  <Checkout></Checkout>,
+        element:   <ProtectedRoute><Checkout></Checkout></ProtectedRoute>,
       },
       {
         path: "/products/:productId",
         element: <SinglePage></SinglePage>,
       },
-      
+
     ],
   },
   {
@@ -59,8 +66,12 @@ const router = createBrowserRouter([
     element: <Login></Login>,
   },
   {
+    path: "/signUp",
+    element: <SignUp></SignUp>,
+  },
+  {
     path: "/manage-products",
-    element: <ManageProductLayout></ManageProductLayout>,
+    element:  <ProtectedRoute><ManageProductLayout></ManageProductLayout></ProtectedRoute>,
     children: [
       {
         index: true,
@@ -79,6 +90,7 @@ const router = createBrowserRouter([
         path: "/manage-products/update/:id",
         element:  <UpdateProduct></UpdateProduct>,
       },
+   
     ],
   },
 ]);

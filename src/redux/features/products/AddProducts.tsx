@@ -1,4 +1,4 @@
- 
+
 
 import { baseApi } from "../../api/baseApi";
 
@@ -13,6 +13,5 @@ const createProductsApi = baseApi.injectEndpoints({
       }),
     }),
   });
-  
+
   export const {  useAddProductsMutation } = createProductsApi;
- 

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductCard from "./ProductCard";
 
-const CategoryProductHandle = ({ category }) => {
+const CategoryProductHandle = ({ category }:{category:any}) => {
   return (
     <div>
       <div>
@@ -15,7 +16,7 @@ const CategoryProductHandle = ({ category }) => {
             </div>
 
             <div className="flex flex-wrap items-center justify-center  gap-8  md:gap-12  md:mx-12   pb-8 mt-6">
-              {category?.map((item, index) => (
+              {category?.map((item:any) => (
                 <ProductCard item={item}></ProductCard>
               ))}
             </div>

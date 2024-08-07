@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Heading from "../Heading";
 
- 
+
 import ViewCard from "./ViewCard";
 import { useAppSelector } from "../../../redux/features/hooks";
 import { useCurrentToken } from "../../../redux/features/auth/authSlice";
@@ -9,17 +10,17 @@ import LoadingPage from "../../../components/sharedComponants/LoadingPage";
 
 const View = () => {
   const token = useAppSelector(useCurrentToken);
-  const { data, error, isLoading ,refetch} = useGetAllProductQuery(undefined, {
+  const { data,  isLoading ,refetch} = useGetAllProductQuery(undefined, {
     skip: !token,
   });
   const product = data?.data;
   // console.log(product);
   if(isLoading){
-    return <LoadingPage></LoadingPage>
+    return <LoadingPage></LoadingPage>;
   }
 
-   
-  
+
+
 
   return (
     <div>
@@ -32,12 +33,12 @@ const View = () => {
             {/* <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4    bg-gray-100"> */}
             {/* <ProductCard products={product} /> */}
 
-           
-                {product?.map((item) => (
+
+                {product?.map((item:any) => (
                   <ViewCard product={item} refetch={refetch}></ViewCard>
                 ))}
-          
-          
+
+
           </div>
         </div>
       </div>

@@ -12,4 +12,3 @@ const getSingleProductApi = baseApi.injectEndpoints({
 });
 
 export const { useGetSingleProductQuery } = getSingleProductApi;
- 

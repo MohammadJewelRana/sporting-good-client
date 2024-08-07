@@ -31,7 +31,7 @@ const Feature = () => {
       heading: "Trade Program",
       text: "We offer exclusive pricing and resources to registered.",
     },
- 
+
   ];
 
   return (

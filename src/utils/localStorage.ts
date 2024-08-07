@@ -1,6 +1,11 @@
-const addToCart = (id: string, operation: string) => {
-  const cart = getShoppingCartFromLocalStorage();
-  let quantity = cart[id];
+export type Operation = "increase" | "decrease"; // Define possible operation values
+interface Cart {
+  [id: string]: number; // Index signature allowing string keys and number values
+}
+
+const addToCart = (id: string, operation:Operation) => {
+  const cart:Cart = getShoppingCartFromLocalStorage();
+  const quantity = cart[id];
   let message;
   // console.log(quantity);
   if (!quantity) {
@@ -40,8 +45,8 @@ const getShoppingCartFromLocalStorage = () => {
   return cart;
 };
 
-const removeFromDb = (id) => {
-  const cart = getShoppingCartFromLocalStorage();
+const removeFromDb = (id:string) => {
+  const cart:Cart = getShoppingCartFromLocalStorage();
   if (id in cart) {
     delete cart[id];
     localStorage.setItem("cart", JSON.stringify(cart));

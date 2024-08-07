@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -5,8 +6,9 @@ import { useDeleteSingleProductMutation } from "../../../redux/features/products
 import { useAppSelector } from "../../../redux/features/hooks";
 import { useCurrentToken } from "../../../redux/features/auth/authSlice";
 import img from "../../../assets/images/productImage/images.jpg";
+import LoadingPage from "../../../components/sharedComponants/LoadingPage";
 
-const ViewCard = ({ product, refetch }) => {
+const ViewCard = ({ product, refetch }:{product:any,refetch:any}) => {
   // console.log(product);
   const token = useAppSelector(useCurrentToken);
   const [deleteSingleProduct, { isLoading }] = useDeleteSingleProductMutation();
@@ -15,7 +17,7 @@ const ViewCard = ({ product, refetch }) => {
     return;
   }
   const handleDelete = async (id: string) => {
-  
+
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -49,6 +51,10 @@ const ViewCard = ({ product, refetch }) => {
       }
     });
   };
+
+  if(isLoading){
+    return <LoadingPage></LoadingPage>
+  }
 
   return (
     <div className="relative group w-64 h-80 m-4 rounded-lg overflow-hidden shadow-lg cursor-pointer">

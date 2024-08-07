@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import { Link } from "react-router-dom";
 
 const Featured = () => {
@@ -24,7 +24,7 @@ const Featured = () => {
       name: "Accessories",
     },
   ];
-     
+
   return (
     <div>
       <div className=" mt-12 mx-4  md:mx-12 py-8">

@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FaEye, FaHeart, FaShoppingCart, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import image from "../../assets/images/productImage/images.jpg";
 import { addToCart } from "../../utils/localStorage";
 import { toast } from "sonner";
-const ProductCard = ({item}) => {
+
+const ProductCard = ({item}:{item:any}) => {
 
 
     const addToCartLocalStorage = (id: string) => {
-        const res = addToCart(id);
+        const res = addToCart(id,'increase');
         // console.log(res);
         if (res === "added") {
           toast("Product Already Added Into The Basket!!");
@@ -16,10 +18,10 @@ const ProductCard = ({item}) => {
           toast("Added to cart successfully!!");
         }
       };
-    
+
   return (
     <div>
-        
+
        <div className="relative group  overflow-hidden rounded-lg shadow-xl p-2 bg-white">
           <img src={image} className="w-full md:w-64 h-64 object-cover" />
           <div className="p-4">
@@ -60,7 +62,7 @@ const ProductCard = ({item}) => {
           </div>
         </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;

@@ -1,49 +1,44 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { useAppSelector } from "../../redux/features/hooks";
-import {
-  selectCurrentUser,
-  useCurrentToken,
-} from "../../redux/features/auth/authSlice";
+import { selectCurrentUser } from "../../redux/features/auth/authSlice";
 import { useGetSingleUserQuery } from "../../redux/features/user/getUSerData";
 import { cartCalculation } from "../../utils/cartCalculation";
 
 import img1 from "../../assets/images/productImage/images.jpg";
 import { deleteShoppingCart } from "../../utils/localStorage";
-import {
-  useCreateCartQuery,
-  useOrderMutation,
-} from "../../redux/features/products/createCart";
+import { useOrderMutation } from "../../redux/features/products/createCart";
+import LoadingPage from "../../components/sharedComponants/LoadingPage";
 
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { newCartProductArray } = location.state || { cart: [] };
   // console.log(newCartProductArray);
-  const completed = true;
+  // const completed = true;
 
-  const token = useAppSelector(useCurrentToken);
+  // const token = useAppSelector(useCurrentToken);
   const [
     order,
-    {
-      isLoading: orderIsLoading,
-      isSuccess: orderIsSuccess,
-      isError: orderIsError,
-      error: orderError,
-    },
+    // {
+    //   isLoading: orderIsLoading,
+    //   isSuccess: orderIsSuccess,
+    //   isError: orderIsError,
+    //   error: orderError,
+    // },
   ] = useOrderMutation();
 
   const user = useAppSelector(selectCurrentUser);
-  const { data, error, isLoading } = useGetSingleUserQuery(user?.userId);
+  const { data, isLoading } = useGetSingleUserQuery(user?.userId);
   const { name, email, contactNo, presentAddress } = data?.data || {};
 
   const { subtotal, totalQuantity, vat, totalCost, shippingCost } =
     cartCalculation(newCartProductArray);
 
-  let productInfoArray = [];
-  newCartProductArray.forEach((element) => {
+  const productInfoArray:any[] = [];
+  newCartProductArray.forEach((element:any) => {
     const { name, _id, price, itemQuantity, images } = element;
     const obj = {
       productId: _id,
@@ -63,7 +58,7 @@ const Checkout = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = (data:any) => {
     console.log(data);
     const {
       name,
@@ -101,18 +96,21 @@ const Checkout = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, do it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const result =  order(orderData).unwrap();
-  
-          Swal.fire({
-            title: "Order Placed!",
-            text: "Your order has been placed.",
-            icon: "success",
-          });
-          navigate("/");
-          handleCartClear();
+          const result = await order(orderData).unwrap();
+
+          if (result) {
+            Swal.fire({
+              title: "Order Placed!",
+              text: "Your order has been placed.",
+              icon: "success",
+            });
+
+            navigate("/");
+            handleCartClear();
+          }
         } catch (error) {
           Swal.fire({
             title: "Error!",
@@ -128,6 +126,10 @@ const Checkout = () => {
     deleteShoppingCart();
   };
 
+  if (isLoading) {
+    return <LoadingPage></LoadingPage>;
+  }
+
   return (
     <div className="md:mx-12 lg:mx-32 p-4">
       <div className="flex flex-wrap justify-between items-start gap-8 p-4">
@@ -140,7 +142,7 @@ const Checkout = () => {
             </p>
           </div>
           <div className="py-4">
-            {newCartProductArray?.map((item) => (
+            {newCartProductArray?.map((item:any) => (
               <div
                 key={item.id}
                 className="flex py-8 justify-between items-center flex-wrap gap-4 px-2 border-b-2"
@@ -226,7 +228,9 @@ const Checkout = () => {
                   />
                   {errors.name && (
                     <span className="text-red-500 text-sm">
-                      {errors.name.message}
+                      {typeof errors.name.message === "string"
+                        ? errors.name.message
+                        : "An error occurred"}
                     </span>
                   )}
                 </div>
@@ -253,7 +257,9 @@ const Checkout = () => {
                   />
                   {errors.email && (
                     <span className="text-red-500 text-sm">
-                      {errors.email.message}
+                      {typeof errors.email.message === "string"
+                        ? errors.email.message
+                        : "An error occurred"}
                     </span>
                   )}
                 </div>
@@ -276,7 +282,9 @@ const Checkout = () => {
                   />
                   {errors.contactNumber && (
                     <span className="text-red-500 text-sm">
-                      {errors.contactNumber.message}
+                      {typeof errors.contactNumber.message === "string"
+                        ? errors.contactNumber.message
+                        : "An error occurred"}
                     </span>
                   )}
                 </div>
@@ -293,13 +301,15 @@ const Checkout = () => {
                       required: "Address is required",
                     })}
                     id="address"
-                    rows="3"
+                    rows={3}
                     defaultValue={presentAddress}
                     className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   ></textarea>
                   {errors.address && (
                     <span className="text-red-500 text-sm">
-                      {errors.address.message}
+                      {typeof errors.address.message === "string"
+                        ? errors.address.message
+                        : "An error occurred"}
                     </span>
                   )}
                 </div>
@@ -333,7 +343,6 @@ const Checkout = () => {
                     className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-
                 <div className="mb-4">
                   <label
                     htmlFor="district"
@@ -351,11 +360,12 @@ const Checkout = () => {
                   />
                   {errors.district && (
                     <span className="text-red-500 text-sm">
-                      {errors.district.message}
+                      {typeof errors.district.message === "string"
+                        ? errors.district.message
+                        : "An error occurred"}
                     </span>
                   )}
                 </div>
-
                 <div>
                   <h1 className="text-xl font-semibold text-gray-500 py-4">
                     {" "}

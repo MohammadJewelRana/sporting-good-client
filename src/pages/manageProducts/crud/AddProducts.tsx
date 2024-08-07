@@ -1,31 +1,51 @@
-import { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ChangeEvent, useState } from "react";
 import Heading from "../Heading";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { useCurrentToken } from "../../../redux/features/auth/authSlice";
-import { useAppSelector } from "../../../redux/features/hooks";
+
 import { useAddProductsMutation } from "../../../redux/features/products/AddProducts";
 import Swal from "sweetalert2";
 
+const img_hosting_token = import.meta.env.VITE_Image_Upload_Token;
+
 const AddProducts = () => {
-  const [images, setImages] = useState([]);
+  // const [images, setImages] = useState([]);
+  const [images, setImages] = useState<File[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
+  const img_hosting_url = `https://api.imgbb.com/1/upload?key=${img_hosting_token}`;
 
-  const token = useAppSelector(useCurrentToken);
-  const [addProducts, { isLoading, isSuccess, isError, error }] =
-    useAddProductsMutation();
+  console.log(uploadedImageUrls);
 
-  const handleImageChange = (e) => {
-    const newImages = Array.from(e.target.files);
-    setImages((prevImages) => [...prevImages, ...newImages]);
-  };
+  // const token = useAppSelector(useCurrentToken);
+  const [
+    addProducts,
+    //  { isLoading, isSuccess, isError, error }
+  ] = useAddProductsMutation();
 
   const {
     reset,
     register,
     handleSubmit,
-    watch,
+    // watch,
+    setValue,
     control,
     formState: { errors },
   } = useForm();
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newImages = Array.from(e.target.files);
+      setImages((prevImages) => [...prevImages, ...newImages]);
+      setValue("images", e.target.files);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prevImages) =>
+      prevImages.filter((_, imgIndex) => imgIndex !== index)
+    );
+  };
 
   const {
     fields: specificationFields,
@@ -45,8 +65,9 @@ const AddProducts = () => {
     name: "tags",
   });
 
-  const onSubmit = async (data) => {
-    const formData = new FormData();
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+    const imageUrls: string[] = [];
 
     const {
       name,
@@ -69,104 +90,128 @@ const AddProducts = () => {
       specifications,
     } = data;
 
-    const priceConvert = Number(price);
-    const discountPriceConvert = Number(discountPrice);
-    const quantityConvert = Number(quantity);
-    const weightConvert = Number(weight);
-    const lengthConvert = Number(length);
-    const widthConvert = Number(width);
-    const heightConvert = Number(height);
+    if (images.length > 0) {
+      const imageFiles = [...images]; // Use current state images
 
-    let inStockNew;
-    if (inStock === "true") {
-      inStockNew = true;
+      const uploadPromises = imageFiles.map(async (file) => {
+        const fileFormData = new FormData();
+        fileFormData.append("image", file);
+
+        try {
+          const response = await fetch(img_hosting_url, {
+            method: "POST",
+            body: fileFormData,
+          });
+
+          const imgResponse = await response.json();
+
+          if (imgResponse.success) {
+            imageUrls.push(imgResponse.data.display_url); // Collect the image URL
+          } else {
+            console.error(
+              "Upload failed for file:",
+              file.name,
+              imgResponse.error
+            );
+          }
+        } catch (error) {
+          setLoading(false);
+          console.error("Error uploading file:", file.name, error);
+        }
+      });
+
+      await Promise.all(uploadPromises);
+
+      setUploadedImageUrls(imageUrls);
+      console.log("Uploaded image URLs:", imageUrls); // Log the array of URLs
     } else {
-      inStockNew = false;
+      console.log("No images selected.");
     }
 
-    const categoryDataNew = {
-      name: categoryName || "",
-      description: categoryDetails || "",
-    };
+    if (imageUrls.length > 0) {
+      try {
+        const priceConvert = Number(price);
+        const discountPriceConvert = Number(discountPrice);
+        const quantityConvert = Number(quantity);
+        const weightConvert = Number(weight);
+        const lengthConvert = Number(length);
+        const widthConvert = Number(width);
+        const heightConvert = Number(height);
 
-    const inventoryData = {
-      quantity: quantityConvert,
-      inStock: inStockNew,
-    };
+        let inStockNew;
+        if (inStock === "true") {
+          inStockNew = true;
+        } else {
+          inStockNew = false;
+        }
 
-    const shippingDetails = {
-      weight: weightConvert,
-      dimensions: {
-        length: lengthConvert,
-        width: widthConvert,
-        height: heightConvert,
-      },
-    };
+        const categoryDataNew = {
+          name: categoryName || "",
+          description: categoryDetails || "",
+        };
 
-    const warrantyData = { details: details || "", period: period || "" };
+        const inventoryData = {
+          quantity: quantityConvert,
+          inStock: inStockNew,
+        };
 
-    // Append basic data fields to FormData
-    if (name) formData.append("name", name);
-    if (price) formData.append("price", priceConvert);
-    if (discountPrice) formData.append("discountPrice", discountPriceConvert);
-    if (brand) formData.append("brand", brand);
-    if (sku) formData.append("sku", sku);
-    if (description) formData.append("description", description);
-    if (categoryDataNew)
-      formData.append("category", JSON.stringify(categoryDataNew));
-    if (inventoryData)
-      formData.append("inventory", JSON.stringify(inventoryData));
-    if (warrantyData) formData.append("warranty", JSON.stringify(warrantyData));
-    if (shippingDetails)
-      formData.append("shippingDetails", JSON.stringify(shippingDetails));
-    if (specifications)
-      formData.append("specifications", JSON.stringify(specifications));
+        const shippingDetails = {
+          weight: weightConvert,
+          dimensions: {
+            length: lengthConvert,
+            width: widthConvert,
+            height: heightConvert,
+          },
+        };
 
-    // Append tags array as individual items
-    if (tags && tags.length > 0) {
-      tags.forEach((tag) => {
-        formData.append("tags[]", tag);
-      });
-    }
+        const warrantyData = { details: details || "", period: period || "" };
 
-    // Append images
-    if (images && images.length > 0) {
-      images.forEach((image) => {
-        formData.append("files", image); // 'files' should match the field name in multer config
-      });
-    }
+        const finalData = {
+          name,
+          description,
+          category: categoryDataNew,
+          price: priceConvert,
+          discountPrice: discountPriceConvert,
+          brand,
+          sku,
+          inventory: inventoryData,
+          images: imageUrls,
+          specifications,
+          warranty: warrantyData,
+          shippingDetails,
+          tags,
+        };
 
-    // Console log formData entries
-    // for (let [key, value] of formData.entries()) {
-    //   console.log(`${key}: ${value}`);
-    // }
+        // console.log(finalData);
 
-    try {
-      const result = await addProducts(formData).unwrap();
+        const result = await addProducts(finalData).unwrap();
 
-      if (result) {
+        if (result) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your product has been added successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+
+          // Reset the form and images state
+          reset();
+          setImages([]);
+          setLoading(false);
+        }
+
+        console.log(result.success);
+      } catch (error) {
         Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Your product has been added successfully",
-          showConfirmButton: false,
-          timer: 1500,
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+          footer: '<a href="#">Why do I have this issue?</a>',
         });
-
-        // Reset the form and images state
-        reset();
-        setImages([]);
+        console.error("Failed to add product:", error);
+        setLoading(false);
       }
-
-      console.log(result.success);
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong!",
-        footer: '<a href="#">Why do I have this issue?</a>',
-      });
-      console.error("Failed to add product:", error);
     }
   };
 
@@ -594,7 +639,47 @@ const AddProducts = () => {
                 <label htmlFor="images" className="block mb-2 ml-1">
                   Upload Images:
                 </label>
-                <input
+                <Controller
+                  name="images"
+                  control={control}
+                  render={() => (
+                    <input
+                      // {...field}
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        handleImageChange(e);
+                      }}
+                      className="p-2 border rounded"
+                    />
+                  )}
+                />
+
+                {/* Display selected images */}
+                {images.length > 0 && (
+                  <div className="mt-2 grid grid-cols-2 md:grid-cols-5 gap-2">
+                    {images.map((image, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={URL.createObjectURL(image)}
+                          alt={`preview-${index}`}
+                          className="h-32 w-32 object-cover rounded-full"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          title="Remove Image"
+                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-2 py-1"
+                        >
+                          X
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* <input
                   type="file"
                   multiple
                   accept="image/*"
@@ -625,13 +710,38 @@ const AddProducts = () => {
                       </div>
                     ))}
                   </div>
-                )}
+                )} */}
               </div>
 
-              <input
-                className="w-full bg-blue-600 text-white py-2 text-md transition-all hover:bg-blue-500 cursor-pointer hover:transition-all hover:duration-300 ease-in-out transform"
-                type="submit"
-              />
+              <button
+                className="w-full bg-blue-600 text-white py-2 text-md transition-all hover:bg-blue-500 cursor-pointer hover:transition-all hover:duration-300 ease-in-out transform flex items-center justify-center"
+                disabled={loading} // Replace `isLoading` with your loading state
+              >
+                {loading === true ? (
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zM12 24c-4.627 0-8-3.373-8-8h-4c0 6.627 5.373 12 12 12v-4zm8-12a8 8 0 01-8 8v4c6.627 0 12-5.373 12-12h-4z"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Submit"
+                )}
+              </button>
             </form>
           </div>
         </div>

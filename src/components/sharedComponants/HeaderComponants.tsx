@@ -1,11 +1,13 @@
 import { FaAddressBook, FaLocationArrow, FaUser } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/features/hooks";
 import { logout } from "../../redux/features/auth/authSlice";
 import { deleteShoppingCart } from "../../utils/localStorage";
+import { useContext } from "react";
+import { AuthContext } from "../../Provider/AuthProvider";
+import LoadingPage from "./LoadingPage";
 
 const Header = () => {
-
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
@@ -16,6 +18,11 @@ const Header = () => {
 
     navigate("/login");
   };
+  const authContext = useContext(AuthContext);
+  if(!authContext){
+    return <LoadingPage></LoadingPage>
+  }
+  const { user } = authContext;
 
   return (
     <div className="  flex flex-col box-border  ">
@@ -55,9 +62,28 @@ const Header = () => {
 
         <div className="flex gap-8     ">
           <div className=" flex  items-center justify-center">
-            <button onClick={handleLogout} className="rounded-lg  w-full font-bold bg-green-600 text-white px-4 py-2">
-              Logout
-            </button>
+            {user ? (
+              <>
+                {" "}
+                <button
+                  onClick={handleLogout}
+                  className="rounded-lg  w-full font-bold bg-green-600 text-white px-4 py-2"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+
+
+             <Link to='/login'>
+               <button
+                onClick={handleLogout}
+                className="rounded-lg  w-full font-bold bg-green-600 text-white px-4 py-2"
+              >
+                Login
+              </button>
+             </Link>
+            )}
           </div>
         </div>
       </div>

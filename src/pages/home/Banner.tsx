@@ -21,7 +21,7 @@ const Banner = () => {
               Explore a wide range of products for sports enthusiasts.
             </p>
             <Link
-           to={`/product/manage/${'normal'}`} 
+           to={`/product/manage/${'normal'}`}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-semibold transition duration-300"
             >
               Shop Now

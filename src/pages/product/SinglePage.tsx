@@ -1,6 +1,6 @@
 import SectionBanner from "../../components/sharedComponants/SectionBanner";
 import productImage from "../../assets/images/productImage/images.jpg";
-import { FaRegStar, FaStar } from "react-icons/fa";
+
 import { FaBasketShopping } from "react-icons/fa6";
 
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
@@ -11,9 +11,8 @@ import { useCurrentToken } from "../../redux/features/auth/authSlice";
 
 import { useGetSingleProductQuery } from "../../redux/features/products/SIngleProduct";
 
-import Rating from "react-rating";
 import RatingStar from "../../components/sharedComponants/RatingStar";
-import { addToCart, addToDb } from "../../utils/localStorage";
+import { addToCart } from "../../utils/localStorage";
 import { toast } from "sonner";
 import Newsletter from "../../components/sharedComponants/Newsletter";
 
@@ -22,7 +21,7 @@ const SinglePage = () => {
   console.log(productId);
 
   const token = useAppSelector(useCurrentToken);
-  const { data, error, isLoading } = useGetSingleProductQuery(productId, {
+  const { data } = useGetSingleProductQuery(productId, {
     skip: !token,
   });
   console.log(data);
@@ -30,7 +29,7 @@ const SinglePage = () => {
   const singleProduct = data?.data;
 
   const addToCartLocalStorage = (id: string) => {
-    addToCart(id);
+    addToCart(id, "increase");
     toast("Added to cart successfully!!");
   };
 
@@ -58,7 +57,10 @@ const SinglePage = () => {
 
           <div className="flex gap-2 mt-4">
             {/* <RatingStar rating={singleProduct?.ratings} /> */}
+           
             <RatingStar ratings={singleProduct?.ratings}></RatingStar>
+
+
             <p>{singleProduct?.ratings?.numberOfRatings} Reviews</p>
           </div>
 

@@ -12,6 +12,7 @@ import { logout, setUser } from "../features/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:5001/api/",
+  // baseUrl: "https://sporting-goods-backend.vercel.app/api/",
   credentials: "include",
 
   //proti request er sathe backend e access token pass
@@ -36,10 +37,14 @@ const baseQueryWithRefreshToken: BaseQueryFn<
   //if error the send refresh token
   if (result.error?.status === 401) {
     //get from backend
-    const res = await fetch("http://localhost:5001/api/auth/refresh-token", {
-      method: "POST",
-      credentials: "include", //pass cookie to backend
-    });
+    const res = await fetch(
+      // "https://sporting-goods-backend.vercel.app/api/auth/refresh-token",
+      "http://localhost:5001/api/auth/refresh-token",
+      {
+        method: "POST",
+        credentials: "include", //pass cookie to backend
+      }
+    );
 
     const data = await res.json();
 

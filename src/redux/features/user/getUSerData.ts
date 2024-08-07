@@ -12,4 +12,3 @@ const getSingleUserApi = baseApi.injectEndpoints({
 });
 
 export const {  useGetSingleUserQuery } = getSingleUserApi;
- 

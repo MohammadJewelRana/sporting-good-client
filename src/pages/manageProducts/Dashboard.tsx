@@ -11,7 +11,7 @@ const Dashboard = () => {
       <Heading heading={"dashboard"}></Heading>
 
       <div className=" border w-full bg-gray-200 p-4 mt-8">
-   
+
       <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
@@ -42,7 +42,7 @@ const Dashboard = () => {
       </div>
 
       {/* Optional: Add charts or graphs here */}
-      
+
       {/* Quick links */}
       <div className="mt-8">
         <h2 className="text-lg font-bold mb-4">Quick Links</h2>
@@ -58,7 +58,7 @@ const Dashboard = () => {
       </div>
 
 
-      
+
     </div>
   );
 };

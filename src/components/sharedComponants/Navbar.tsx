@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import {
   FaBars,
   FaHeart,
@@ -7,60 +7,29 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { getShoppingCartFromLocalStorage } from "../../utils/localStorage";
 
-
-const getShoppingCartFromLocalStorag = () => {
-  return JSON.parse(localStorage.getItem('cart')) || {};
-};
-
+import logo from "../../assets/images/logo/logo1.jpg";
+import { AuthContext } from "../../Provider/AuthProvider";
+import LoadingPage from "./LoadingPage";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
- 
-  // const [cart, setCart] = useState(getShoppingCartFromLocalStorage());
-  
-  // useEffect(() => {
-     
-  //   const currentLength=async()=>{
-  //     setCart(getShoppingCartFromLocalStorage());
-  //   }
-  //   currentLength();
 
-  // }, [cart]);
-  // // }, [cart]);
-
-  // const numberOfKeys = Object.keys(cart).length;
-
-  const [cart, setCart] = useState(getShoppingCartFromLocalStorag());
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setCart(getShoppingCartFromLocalStorage());
-    };
-
-    // Listen for changes to local storage
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      // Clean up the event listener on component unmount
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [cart]);
-
-  const numberOfKeys = Object.keys(cart).length;
-
- 
- 
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    return <LoadingPage></LoadingPage>;
+  }
+  const { numberOfKeys } = authContext;
 
   return (
-    <nav className="bg-gray-600 text-white ">
+    // <nav className="bg-gray-600 text-white  w-full   shadow-lg   ">
+    <nav className="bg-gradient-to-r from-green-400 to-pink-800 text-white w-full shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <img className="h-8 w-8" src="logo.png" alt="Logo" />
+              <img className="h-8 w-8 rounded-full " src={logo} alt="Logo" />
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
@@ -83,11 +52,17 @@ const Navbar = () => {
                   Contact Us
                 </Link>
                 <Link
-                  to={`/product/manage/${'normal'}`} 
+                  to={`/product/manage/${"normal"}`}
                   className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Products
                 </Link>
+                {/* <Link
+                  to='/myOrder'
+                  className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  My Orders
+                </Link> */}
                 <Link
                   to="/manage-products"
                   className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
@@ -126,7 +101,7 @@ const Navbar = () => {
                 <FaHeart className="h-6 w-6" />
               </button>
               <span className="absolute -top-1 -right-2 inline-block w-5 h-5 bg-red-500 text-white text-xs font-bold text-center rounded-full">
-                5
+                0
               </span>
             </div>
           </div>

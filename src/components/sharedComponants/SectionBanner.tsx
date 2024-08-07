@@ -1,6 +1,6 @@
- 
-import img from '../../assets/images/pagesBackground/c.jpg'
-const SectionBanner = ({heading}) => {
+
+import img from '../../assets/images/pagesBackground/c.jpg';
+const SectionBanner = ({heading}:{heading:string}) => {
   return (
     <div>
        <div className="relative  h-[300px] flex justify-center items-center">
@@ -12,7 +12,7 @@ const SectionBanner = ({heading}) => {
         <h1 className="relative text-white text-6xl font-bold capitalize"> {heading}</h1>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SectionBanner
+export default SectionBanner;

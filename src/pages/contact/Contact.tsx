@@ -6,7 +6,7 @@ import GetInTouch from "./GetInTouch";
 const Contact = () => {
   return (
     <div>
-    
+
       <SectionBanner heading={'Contact us'} ></SectionBanner>
 
       <div className="bg-gray-100  ">
@@ -40,7 +40,7 @@ const Contact = () => {
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14597.752131076564!2d90.34117698669432!3d23.838574521865922!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c10078fabca1%3A0xf7bf824d69d57d8e!2sNoor%20Print!5e0!3m2!1sen!2sbd!4v1720717683758!5m2!1sen!2sbd"
                   loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
+                  // referrerpolicy="no-referrer-when-downgrade"
                   className="w-full h-full"
                 ></iframe>
               </div>

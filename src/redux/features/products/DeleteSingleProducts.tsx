@@ -10,5 +10,5 @@ const deleteSingleProductApi = baseApi.injectEndpoints({
       }),
     }),
   });
-  
+
   export const { useDeleteSingleProductMutation } = deleteSingleProductApi;

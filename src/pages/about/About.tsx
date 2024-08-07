@@ -17,38 +17,39 @@ const About = () => {
       </div>
 
       <div className="container mx-auto p-4 mt-16">
-        
+        <section className="py-12">
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center mb-8 text-green-600">
+              Our Story
+            </h2>
+            <p className="text-lg text-gray-700 text-center">
+              Welcome to our company! We are dedicated to providing the best
+              products and services to our customers. Our mission is to create
+              value for our stakeholders and make a positive impact in our
+              community.
+            </p>
+          </div>
+        </section>
 
         <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-8 text-green-600">Our Story</h2>
-          <p className="text-lg text-gray-700 text-center">
-          Welcome to our company! We are dedicated to providing the best
-            products and services to our customers. Our mission is to create
-            value for our stakeholders and make a positive impact in our
-            community.
-          </p>
-        </div>
-      </section>
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center mb-8 text-green-600">
+              Mission and Vision
+            </h2>
+            <p className="text-lg text-gray-700 text-center">
+              <p className="text-lg leading-relaxed mb-2">
+                <strong>Mission:</strong> To deliver high-quality products that
+                bring joy and satisfaction to our customers.
+              </p>
+              <p className="text-lg leading-relaxed">
+                <strong>Vision:</strong> To be the leading company in our
+                industry, known for our commitment to excellence and innovation.
+              </p>
+            </p>
+          </div>
+        </section>
 
-        <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-8 text-green-600">Mission and Vision</h2>
-          <p className="text-lg text-gray-700 text-center">
-          <p className="text-lg leading-relaxed mb-2">
-            <strong>Mission:</strong> To deliver high-quality products that
-            bring joy and satisfaction to our customers.
-          </p>
-          <p className="text-lg leading-relaxed">
-            <strong>Vision:</strong> To be the leading company in our industry,
-            known for our commitment to excellence and innovation.
-          </p>
-          </p>
-        </div>
-      </section>
-
-  
-          <section className="py-12 px-4 md:px-12">
+        <section className="py-12 px-4 md:px-12">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Left Column: Contact Information */}
@@ -77,20 +78,14 @@ const About = () => {
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14597.752131076564!2d90.34117698669432!3d23.838574521865922!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c10078fabca1%3A0xf7bf824d69d57d8e!2sNoor%20Print!5e0!3m2!1sen!2sbd!4v1720717683758!5m2!1sen!2sbd"
                   loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
+                  // referrerpolicy="no-referrer-when-downgrade"
                   className="w-full h-full"
                 ></iframe>
               </div>
             </div>
           </div>
         </section>
-
-
-        
- 
- 
       </div>
- 
 
       {/* Our Team Section */}
       <section className="py-12 bg-white">

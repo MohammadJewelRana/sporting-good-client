@@ -1,26 +1,33 @@
+ 
 import Newsletter from "../../components/sharedComponants/Newsletter";
-import {
-  selectCurrentUser,
-  useCurrentToken,
-} from "../../redux/features/auth/authSlice";
-import { useAppSelector } from "../../redux/features/hooks";
+ 
 import { useGetAllProductQuery } from "../../redux/features/products/GetAllProducts";
-import GetInTouch from "../contact/GetInTouch";
+ 
 import Banner from "./Banner";
+import Banner2 from "./Banner2";
 import Feature from "./Feature";
 import Featured from "./featured/Featured";
 import HeroSection from "./HeroSection";
 import NewArrivalTab from "./NewArrivalTab";
 
 import TopRange from "./TopRange";
+ 
+import LoadingPage from "../../components/sharedComponants/LoadingPage";
 
 const Home = () => {
-  const user = useAppSelector(selectCurrentUser); //get user
-  // console.log(user);
 
-  const token = useAppSelector(useCurrentToken);
-  const { data, error, isLoading, refetch } = useGetAllProductQuery(undefined);
+
+
+  // const token = useAppSelector(useCurrentToken);
+  const { data, isLoading, refetch } = useGetAllProductQuery(undefined);
   const productData = data?.data;
+
+  // const {user}=useContext(AuthContext);
+
+  if(isLoading){
+    return <LoadingPage></LoadingPage>
+  }
+
 
   return (
     <div>
@@ -36,7 +43,9 @@ const Home = () => {
 
       <TopRange productData={productData} refetch={refetch}></TopRange>
 
-      <GetInTouch></GetInTouch>
+      <Banner2></Banner2>
+
+      {/* <GetInTouch></GetInTouch> */}
       <Newsletter></Newsletter>
     </div>
   );

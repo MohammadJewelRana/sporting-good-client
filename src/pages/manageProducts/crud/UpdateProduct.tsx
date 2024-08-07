@@ -1,3 +1,4 @@
+ /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams } from "react-router-dom";
 import { useGetProductData } from "../../../utils/getData";
 import Heading from "../Heading";
@@ -6,22 +7,41 @@ import { useForm, useFieldArray } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useUpdateProductsMutation } from "../../../redux/features/products/UpdateProductsApi";
 
+// Define types for the form data
+interface Specification {
+  key: string;
+  value: string;
+}
+
+type FormValues = {
+  name: string;
+  price: string;
+  discountPrice: string;
+  brand: string;
+  sku: string;
+  description: string;
+  categoryName: string;
+  categoryDetails: string;
+  quantity: string;
+  inStock: string;
+  period: string;
+  specifications: Specification[];
+  tags: string[];
+};
 
 const UpdateProduct = () => {
   const { id } = useParams();
-  const { singleProduct, error, isLoading } = useGetProductData(id);
+  const { singleProduct, error, isLoading } = useGetProductData(id ?? "");
 
   const [updateProducts] = useUpdateProductsMutation();
-  // console.log(singleProduct);
 
   const {
     register,
     control,
     handleSubmit,
-    setValue,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormValues>({
     defaultValues: {
       name: "",
       price: "",
@@ -48,15 +68,6 @@ const UpdateProduct = () => {
     name: "specifications",
   });
 
-  const {
-    fields: tagFields,
-    append: appendTag,
-    remove: removeTag,
-  } = useFieldArray({
-    control,
-    name: "tags",
-  });
-
   useEffect(() => {
     if (singleProduct) {
       reset({
@@ -72,12 +83,12 @@ const UpdateProduct = () => {
         inStock: singleProduct.inventory.inStock || "",
         period: singleProduct.period || "",
         specifications: singleProduct.specifications || [],
-        tags: singleProduct.tags || [],
+        // tags: singleProduct.tags || [],
       });
     }
   }, [singleProduct, reset]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormValues) => {
     console.log(data);
 
     const {
@@ -88,13 +99,10 @@ const UpdateProduct = () => {
       categoryName,
       categoryDetails,
       description,
-
       inStock,
-
       quantity,
       sku,
       tags,
-
       specifications,
     } = data;
 
@@ -121,15 +129,15 @@ const UpdateProduct = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, update it!",
-    }).then(async(result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-         
-          console.log('update');
-          
-         
+          console.log("update");
+
           const result = await updateProducts(updatedData).unwrap();
-          if (result) {
+          console.log(result);
+
+          if (result?.success === true) {
             Swal.fire({
               position: "top-end",
               icon: "success",
@@ -138,9 +146,6 @@ const UpdateProduct = () => {
               timer: 1500,
             });
           }
-
-
-
         } catch (error) {
           Swal.fire({
             icon: "error",
@@ -166,7 +171,7 @@ const UpdateProduct = () => {
           <h2 className="text-xl font-semibold mb-4">Product Images:</h2>
           <div className="flex flex-wrap gap-4">
             {singleProduct?.images.length > 0 ? (
-              singleProduct?.images.map((image, index) => (
+              singleProduct?.images.map((image: any, index: any) => (
                 <div
                   key={index}
                   className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 mx-auto"
@@ -307,14 +312,10 @@ const UpdateProduct = () => {
               Category Details:
             </label>
             <textarea
-              {...register("categoryDetails", { required: true })}
+              {...register("categoryDetails")}
               placeholder="Category Details"
               className="textarea border w-full px-3 py-2 rounded-lg text-black h-20"
-              defaultValue={singleProduct.cat}
             />
-            {errors.categoryDetails && (
-              <span className="mt-4 text-red-600">This field is required</span>
-            )}
           </div>
 
           {/* Inventory */}
@@ -338,37 +339,41 @@ const UpdateProduct = () => {
 
             <div className="mb-6 w-[48%]">
               <label htmlFor="inStock" className="block mb-2 ml-1">
-                In Stock:
+                Stock Status:
               </label>
               <select
                 className="border w-full px-3 py-2 rounded-lg text-black"
                 {...register("inStock", { required: true })}
+                defaultValue={singleProduct.inventory?.inStock}
               >
-                <option value="">Stock Status</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
+                <option value="">Select</option>
+                <option value="true">In Stock</option>
+                <option value="false">Out of Stock</option>
               </select>
               {errors.inStock && (
-                <span className="mt-4 text-red-600">
-                  This field is required
-                </span>
+                <span className="mt-4 text-red-600">This field is required</span>
               )}
             </div>
           </div>
 
+       
+
           {/* Specifications */}
           <div className="mb-6">
-            <label className="block mb-2 ml-1">Specifications:</label>
+            <label htmlFor="specifications" className="block mb-2 ml-1">
+              Specifications:
+            </label>
+
             {specificationFields.map((field, index) => (
               <div key={field.id} className="mb-4 flex gap-8 flex-wrap">
                 <input
                   className="border px-3 py-2 rounded-lg text-black"
-                  {...register(`specifications.${index}.key`)}
+                  {...register(`specifications.${index}.key` as const)}
                   placeholder="Specification Key"
                 />
                 <input
                   className="border px-3 py-2 rounded-lg text-black mt-2"
-                  {...register(`specifications.${index}.value`)}
+                  {...register(`specifications.${index}.value` as const)}
                   placeholder="Specification Value"
                 />
                 <button
@@ -383,43 +388,15 @@ const UpdateProduct = () => {
             <button
               type="button"
               onClick={() => appendSpecification({ key: "", value: "" })}
-              className="bg-green-500 text-white px-4 py-2 rounded"
+              className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
             >
               Add Specification
             </button>
           </div>
 
-          {/* Tags */}
-          <div className="mb-6">
-            <label className="block mb-2 ml-1">Tags:</label>
-            {tagFields.map((field, index) => (
-              <div key={field.id} className="mb-4">
-                <input
-                  className="border px-3 py-2 rounded-lg text-black"
-                  {...register(`tags.${index}`)}
-                  placeholder="Tag"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeTag(index)}
-                  className="mt-2 bg-red-500 text-white ml-4 px-4 py-2 rounded"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => appendTag("")}
-              className="bg-green-500 text-white px-4 py-2 rounded"
-            >
-              Add Tag
-            </button>
-          </div>
-
           <button
             type="submit"
-            className="bg-blue-500 text-white px-6 py-3 rounded w-full"
+            className="bg-green-500 text-white px-4 py-2 rounded w-full"
           >
             Update Product
           </button>
