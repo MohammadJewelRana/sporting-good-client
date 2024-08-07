@@ -29,6 +29,8 @@ const ProductPage = () => {
   const [rating, setRating] = useState("");
   const [sort, setSort] = useState("");
   const [allProductData, setAllProductData] = useState<Product[]>([]);
+ 
+  
 
   const handleClearFilters = () => {
     setSearch("");
@@ -43,6 +45,10 @@ const ProductPage = () => {
     data: unsortedData,
     isLoading: unsortedLoading,
   } = useGetAllProductQuery(undefined);
+  console.log(unsortedData);
+  
+
+
   const { data: sortedData, isLoading: sortedLoading } =
     useGetAllSortedProductQuery(sort);
   const { data: searchData, isLoading: searchDataLoading } =

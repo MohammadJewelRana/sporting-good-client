@@ -19,10 +19,7 @@ const SignUp = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit =  (data: any) => {
-    // console.log(data);
-    // Handle form submission logic here
-
+  const onSubmit = async (data: any) => {
     const {
       firstName,
       secondName,
@@ -45,30 +42,29 @@ const SignUp = () => {
       presentAddress: address,
     };
     console.log(finalData);
-
+  
     try {
-      const result =  addUser(finalData).unwrap();
+      const result = await addUser(finalData).unwrap();
       if (result) {
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: " Registration Completed successfully",
+          title: "Registration Completed successfully",
           showConfirmButton: false,
           timer: 1500,
         });
-
-        // Reset the form and images state
+  
+        // Reset the form state
         reset();
       }
     } catch (error) {
-      console.log(error);
+      console.error("Failed to add user:", error);
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Something went wrong!",
         footer: '<a href="#">Why do I have this issue?</a>',
       });
-      console.error("Failed to add user:", error);
     }
   };
 
