@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { useDeleteSingleProductMutation } from "../../../redux/features/products/DeleteSingleProducts";
 import { useAppSelector } from "../../../redux/features/hooks";
 import { useCurrentToken } from "../../../redux/features/auth/authSlice";
-import img from "../../../assets/images/productImage/images.jpg";
+// import img from "../../../assets/images/productImage/images.jpg";
 import LoadingPage from "../../../components/sharedComponants/LoadingPage";
 
 const ViewCard = ({ product, refetch }:{product:any,refetch:any}) => {
@@ -59,7 +59,7 @@ const ViewCard = ({ product, refetch }:{product:any,refetch:any}) => {
   return (
     <div className="relative group w-64 h-80 m-4 rounded-lg overflow-hidden shadow-lg cursor-pointer">
       <img
-        src={img}
+        src={product.images[0]}
         // src={product.image}
         alt={product.name}
         className="w-full h-full object-cover"

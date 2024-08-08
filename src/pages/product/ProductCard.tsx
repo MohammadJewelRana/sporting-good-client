@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FaEye, FaHeart, FaShoppingCart, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import image from "../../assets/images/productImage/images.jpg";
+// import image from "../../assets/images/productImage/images.jpg";
 import { addToCart } from "../../utils/localStorage";
 import { toast } from "sonner";
 
@@ -23,7 +23,7 @@ const ProductCard = ({item}:{item:any}) => {
     <div>
 
        <div className="relative group  overflow-hidden rounded-lg shadow-xl p-2 bg-white">
-          <img src={image} className="w-full md:w-64 h-64 object-cover" />
+          <img src={item?.images[0]} className="w-full md:w-64 h-64 object-cover" />
           <div className="p-4">
             <div>
               <h3 className=" h-12 font-semibold mb-4"> {item.name}</h3>

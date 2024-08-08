@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
 
-import imageUrl from "../../assets/images/productImage/images.jpg";
+// import imageUrl from "../../assets/images/productImage/images.jpg";
 import { FaEye, FaHeart, FaShoppingCart, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { addToCart } from "../../utils/localStorage";
@@ -38,6 +38,9 @@ const SingleProductCard = ({ productData }: any) => {
     }
   };
 
+  console.log(productData);
+  
+
   return (
     <div>
       <Swiper
@@ -49,7 +52,7 @@ const SingleProductCard = ({ productData }: any) => {
         {productData?.map((item: any, index: any) => (
           <SwiperSlide key={index}>
             <div className="relative group overflow-hidden rounded-lg shadow-xl p-4 bg-white">
-              <img src={imageUrl} className="w-full h-64 object-cover" />
+              <img src={item?.images[0]} className="w-full h-64 object-cover" />
               <div className="p-4">
                 <div>
                   <h3 className=" h-12 font-semibold mb-4">{item.name}</h3>

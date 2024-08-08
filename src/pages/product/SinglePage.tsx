@@ -1,5 +1,5 @@
 import SectionBanner from "../../components/sharedComponants/SectionBanner";
-import productImage from "../../assets/images/productImage/images.jpg";
+// import productImage from "../../assets/images/productImage/images.jpg";
 
 import { FaBasketShopping } from "react-icons/fa6";
 
@@ -11,7 +11,7 @@ import { useCurrentToken } from "../../redux/features/auth/authSlice";
 
 import { useGetSingleProductQuery } from "../../redux/features/products/SIngleProduct";
 
-import RatingStar from "../../components/sharedComponants/RatingStar";
+// import RatingStar from "../../components/sharedComponants/RatingStar";
 import { addToCart } from "../../utils/localStorage";
 import { toast } from "sonner";
 import Newsletter from "../../components/sharedComponants/Newsletter";
@@ -39,7 +39,7 @@ const SinglePage = () => {
 
       <div className="mt-16 px-4  flex items-start justify-center gap-8 flex-wrap">
         <div>
-          <img src={productImage} className="h-[400px] w-[400px]" alt="" />
+          <img src={singleProduct?.images[0]} className="h-[400px] w-[400px]" alt="" />
         </div>
 
         <div>
@@ -58,9 +58,10 @@ const SinglePage = () => {
           <div className="flex gap-2 mt-4">
             {/* <RatingStar rating={singleProduct?.ratings} /> */}
            
-            <RatingStar ratings={singleProduct?.ratings}></RatingStar>
+            {/* <RatingStar ratings={singleProduct?.ratings}></RatingStar> */}
 
 
+   
             <p>{singleProduct?.ratings?.numberOfRatings} Reviews</p>
           </div>
 

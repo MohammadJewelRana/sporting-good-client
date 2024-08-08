@@ -7,7 +7,7 @@ import { selectCurrentUser } from "../../redux/features/auth/authSlice";
 import { useGetSingleUserQuery } from "../../redux/features/user/getUSerData";
 import { cartCalculation } from "../../utils/cartCalculation";
 
-import img1 from "../../assets/images/productImage/images.jpg";
+// import img1 from "../../assets/images/productImage/images.jpg";
 import { deleteShoppingCart } from "../../utils/localStorage";
 import { useOrderMutation } from "../../redux/features/products/createCart";
 import LoadingPage from "../../components/sharedComponants/LoadingPage";
@@ -149,7 +149,7 @@ const Checkout = () => {
               >
                 <div>
                   <img
-                    src={img1}
+                    src={item?.images[0]}
                     className="h-12 w-12 rounded-full"
                     alt="Product"
                   />

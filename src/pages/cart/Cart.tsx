@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import img1 from "../../assets/images/productImage/images.jpg";
+// import img1 from "../../assets/images/productImage/images.jpg";
 import { FaEye, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { FaLeftRight } from "react-icons/fa6";
@@ -105,7 +105,7 @@ const Cart = () => {
                 <div className="flex items-center gap-4">
                   <div>
                     <img
-                      src={img1}
+                      src={item?.images[0]}
                       className="h-12 w-12 rounded-full"
                       alt="Product"
                     />
